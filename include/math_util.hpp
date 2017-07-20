@@ -10,7 +10,7 @@
 
 namespace MathUtil
 {
-Eigen::Matrix<double, 2, 1> po;
+//Eigen::Matrix<double, 2, 1> po;
 
 double step(double x) { return (x > 0) ? 1 : 0; }
 double sigmoid(double x) { return 1.0 / (1 + std::exp(-x)); }
