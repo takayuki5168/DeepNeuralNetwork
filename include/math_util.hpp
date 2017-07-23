@@ -1,6 +1,6 @@
 /*!
  * @file    math_util.hpp
- * @brief   便利な数学関数
+ * @brief   utility math functions
  */
 
 #pragma once
@@ -10,8 +10,8 @@
 
 namespace MathUtil
 {
-//Eigen::Matrix<double, 2, 1> po;
 
+double identity(double x) { return x; }
 double step(double x) { return (x > 0) ? 1 : 0; }
 double sigmoid(double x) { return 1.0 / (1 + std::exp(-x)); }
 double relu(double x) { return (x > 0) ? x : 0; }
