@@ -3,7 +3,7 @@
 namespace MachineLearning
 {
 
-  Neuron::Neuron(std::function<double(double, Eigen::VectorXd, Eigen::VectorXd)> active_func, std::vector<std::shared_ptr<Neuron>> in_neuron_vec)  // = {nullptr})
+Neuron::Neuron(std::function<double(double, Eigen::VectorXd, Eigen::VectorXd)> active_func, std::vector<std::shared_ptr<Neuron>> in_neuron_vec)  // = {nullptr})
     : m_active_func(active_func)
 {
     m_in_neuron_vec = in_neuron_vec;

@@ -1,61 +1,31 @@
 #include "include/neural_network.hpp"
-#include "include/math_util.hpp"
 
 namespace MachineLearning
 {
 
-void NeuralNetwork::initNetwork()
+void NeuralNetwork::addLayer(const int neuron_num, std::function<double(double)> active_func)
 {
-    // resize input, hidden, output layer
-    m_in_neuron.resize(m_in_num);
-    m_hid_neuron.resize(m_hid_num);
-    m_out_neuron.resize(m_out_num);
-
-    // init neuron of input layer
-    for (auto itr = m_in_neuron.begin(); itr != m_in_neuron.end(); itr++) {
-        itr->initNeuron(1, MathUtil::identity);
+    std::vector<std::shared_ptr<Neuron>> neuron_vec;
+    neuron_vec.resize(neuron_num);
+    for (auto neuron : neuron_vec) {
+        if (neuron_vec.size() == 0) {
+            neuron = std::make_shared<Neuron>(active_func, m_layer_vec.back());
+        } else {
+            neuron = std::make_shared<Neuron>(active_func);
+        }
     }
-
-    // init neuron of hidden layer
-    for (auto itr = m_hid_neuron.begin(); itr != m_hid_neuron.end(); itr++) {
-        itr->initNeuron(m_in_num, MathUtil::sigmoid);
-    }
-
-    // init neuron of output layer
-    for (auto itr = m_out_neuron.begin(); itr != m_out_neuron.end(); itr++) {
-        itr->initNeuron(m_hid_num, MathUtil::sigmoid);
-    }
+    m_layer_vec.push_back(neuron_vec);
 }
 
-void NeuralNetwork::forward(Eigen::VectorXd in_in_value)
+void NeuralNetwork::forward(Eigen::VectorXd in_value_vec)
 {
-    Eigen::VectorXd hid_in_value;
-    Eigen::VectorXd out_in_value;
-
-    // input value of neuron of input layer
-    in_in_value.resize(m_in_num);
-    // input value of neuron of hidden layer
-    hid_in_value.resize(m_in_num);
-    // input value of neuron of output layer
-    out_in_value.resize(m_hid_num);
-
-    // calc of neuron of hidden layer
-    for (int i = 0; i < m_in_num; i++) {
-        m_in_neuron.at(i).m_in_value(0) = in_in_value(i);
-        m_in_neuron.at(i).calc();
-        for (int j = 0; j < m_hid_num; j++) {
-            m_hid_neuron.at(i).m_in_value(j) = m_in_neuron.at(i).m_out_value;
-        }
-    }
-
-    // calc of neuron of output layer
-    for (int i = 0; i < m_hid_num; i++) {
-        for (int j = 0; j > m_in_num; j++) {
-            m_hid_neuron.at(i).m_in_value(j) = hid_in_value(j);
-        }
-        m_hid_neuron.at(i).calc();
-        for (int k = 0; k < m_out_num; k++) {
-            m_out_neuron.at(i).m_in_value(k) = m_hid_neuron.at(i).m_out_value;
+    for (unsigned int i = 0; i < m_layer_vec.size(); i++) {
+        for (unsigned int j = 0; j < m_layer_vec.at(i).size(); j++) {
+            if (i == 0) {
+                m_layer_vec.at(i).at(j)->calc(in_value_vec);
+            } else {
+                m_layer_vec.at(i).at(j)->calc();
+            }
         }
     }
 }
@@ -64,6 +34,7 @@ void NeuralNetwork::backward()
 {
 }
 
+/*
 Eigen::VectorXd NeuralNetwork::softmax()
 {
     // calc max value of output
@@ -85,5 +56,5 @@ Eigen::VectorXd NeuralNetwork::softmax()
 
     return output;
 }
-
+*/
 }  // namespace of MachineLearning

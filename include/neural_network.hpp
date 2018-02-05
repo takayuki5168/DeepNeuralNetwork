@@ -2,11 +2,11 @@
  * @file    neural_network.hpp
  * @brief   class of neural network
  */
-
 #pragma once
 
-#include <array>
 #include <vector>
+#include <memory>
+#include <functional>
 #include <Eigen/Geometry>
 #include "include/neuron.hpp"
 
@@ -16,23 +16,14 @@ namespace MachineLearning
 class NeuralNetwork
 {
 public:
-    explicit NeuralNetwork(int in_num, int hid_num, int out_num)
-        : m_in_num(in_num), m_hid_num(hid_num), m_out_num(out_num) {}
+    explicit NeuralNetwork() {}
+    void addLayer(const int neuron_num, std::function<double(std::vector<double>)> active_func);
 
-    void initNetwork();
-    void forward(Eigen::VectorXd in_in_value);
+    void forward(Eigen::VectorXd in_value_vec);
     void backward();
 
 private:
-    Eigen::VectorXd softmax();
-
-    // num of neuron of input, hidden, output layer
-    int m_in_num, m_hid_num, m_out_num;
-
-    // neuron of input, hidden, output layer
-    std::vector<Neuron> m_in_neuron;
-    std::vector<Neuron> m_hid_neuron;
-    std::vector<Neuron> m_out_neuron;
+    std::vector<std::vector<std::shared_ptr<Neuron>>> m_layer_vec;
 };
 
 }  // namespace of MachineLearning

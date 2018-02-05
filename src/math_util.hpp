@@ -1,8 +1,3 @@
-/*!
- * @file    math_util.hpp
- * @brief   utility math functions
- */
-
 #pragma once
 
 #include <cmath>
