@@ -32,14 +32,13 @@ include_directories(SYSTEM ${EIGEN_INCLUDE_DIR})
 add_definitions(-DEIGEN_NO_DEBUG)
 add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_ZERO)
 
-# src/ and include/
-file(GLOB_RECURSE SUB_SOURCES ${CMAKE_CURRENT_LIST_DIR}/src/*.cpp)
-include_directories(${CMAKE_CURRENT_LIST_DIR}/include)
+# deep-neural-network
+include_directories(DEEP_NEURAL_NETWORK ${CMAKE_CURRENT_LIST_DIR}/deep-neural-network/include/)
 
 # Sources and headers
-file(GLOB SOURCES ${CMAKE_CURRENT_LIST_DIR}/main.cpp)
-list(APPEND SOURCES ${SUB_SOURCES})
-include_directories(${CMAKE_CURRENT_LIST_DIR})
+file(GLOB SOURCES ${CMAKE_CURRENT_LIST_DIR} main.cpp)
+#list(APPEND SOURCES ${SUB_SOURCES})
+#include_directories(${CMAKE_CURRENT_LIST_DIR})
 
 # Echo compile flags
 message("Build type:\n\t${CMAKE_BUILD_TYPE}")
@@ -52,7 +51,9 @@ else()
 endif()
 
 # Build main
-add_executable(main ${SOURCES})
+add_executable(main 
+    ${SOURCES}
+    deep-neural-network/)
 target_link_libraries(main
     #${Boost_LIBRARIES}
     )
