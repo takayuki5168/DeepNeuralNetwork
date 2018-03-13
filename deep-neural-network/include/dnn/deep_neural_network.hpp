@@ -17,14 +17,15 @@ class DeepNeuralNetwork
 {
 public:
     explicit DeepNeuralNetwork() {}
-    void add(std::unique_ptr<AbstLayer>);
+    void add(std::unique_ptr<AbstLayer>&& layer) { m_layers.push_back(std::move(layer)); }
 
-    void train();
-    void test();
+    void fit() {}
+    void predict() {}
+
+    //void compile(std::function<> loss, std::unique_ptr<Optimizer> optimizer) {}
 
 private:
-    void forward();
-    void backward();
+    std::vector<std::unique_ptr<AbstLayer>> m_layers;
 };
 
 }  // namespace of MachineLearning
