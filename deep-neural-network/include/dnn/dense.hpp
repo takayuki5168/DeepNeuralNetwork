@@ -8,13 +8,24 @@ namespace MachineLearning
 class Dense : public AbstLayer
 {
 public:
-    explicit Dense(int neuron_num)
-        : AbstLayer(), m_neuron_num(neuron_num) {}
+    explicit Dense(int neuron_num,
+        ActFunc activation = ActFunc())
+        : AbstLayer(neuron_num)
+    {
+    }
+    explicit Dense(int neuron_num, int input_num,
+        ActFunc activation = ActFunc())
+        : AbstLayer(neuron_num, input_num) {}
 
-    void forward() {}
-    void backward() {}
+    Eigen::VectorXf forward(Eigen::VectorXf in_val) override
+    {
+    }
+    Eigen::VectorXf backward(Eigen::VectorXf in_val) override
+    {
+    }
+
 private:
-    const int m_neuron_num = 1;
+    ActFunc m_activation;
 };
 
 }  // namespace of MachineLearning

@@ -17,7 +17,13 @@ class DeepNeuralNetwork
 {
 public:
     explicit DeepNeuralNetwork() {}
-    void add(std::unique_ptr<AbstLayer>&& layer) { m_layers.push_back(std::move(layer)); }
+    void add(std::unique_ptr<AbstLayer>&& layer)
+    {
+        if (not m_layers.empty()) {  // not input layer
+            layer->setInputNum(m_layers.back()->getInputNum());
+        }
+        m_layers.push_back(std::move(layer));
+    }
 
     void fit() {}
     void predict() {}
