@@ -11,12 +11,13 @@ public:
     explicit Dropout(double rate)
         : AbstLayer(), m_rate(rate) {}
 
-    Eigen::VectorXf forward(Eigen::VectorXf in_val) override
+    Eigen::VectorXd forward(Eigen::VectorXd in_val) override
     {
-        in_val[0];
+        return in_val;
     }
-    Eigen::VectorXf backward(Eigen::VectorXf in_val) override
+    Eigen::VectorXd backward(Eigen::VectorXd in_val) override
     {
+        return in_val;
     }
 
 private:
