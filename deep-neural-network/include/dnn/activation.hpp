@@ -10,13 +10,13 @@ class Identify : public AbstLayer
 public:
     explicit Identify() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_val)
+    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
-    Eigen::VectorXd backward(Eigen::VectorXd in_val)
+    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
 
 private:
@@ -27,18 +27,18 @@ class Step : public AbstLayer
 public:
     explicit Step() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_val)
+    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
     {
-        Eigen::VectorXd out_val;
-        for (int i = 0; i < in_val.size(); i++) {
-            out_val(i) = (in_val(i) > 0) ? 1 : 0;
+        Eigen::VectorXd out_mat;
+        for (int i = 0; i < in_mat.size(); i++) {
+            out_mat(i) = (in_mat(i) > 0) ? 1 : 0;
         }
-        return out_val;
+        return out_mat;
     }
     // TODO
-    Eigen::VectorXd backward(Eigen::VectorXd in_val)
+    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
 
 private:
@@ -49,25 +49,25 @@ class Softmax : public AbstLayer
 public:
     explicit Softmax() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_val)
+    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
     {
         // TODO 最小値でいいのか
-        double min_val = in_val(0);
-        for (int i = 0; i < in_val.size(); i++) {
-            min_val = (min_val > in_val(i)) ? in_val(i) : min_val;
+        double min_mat = in_mat(0);
+        for (int i = 0; i < in_mat.size(); i++) {
+            min_mat = (min_mat > in_mat(i)) ? in_mat(i) : min_mat;
         }
 
-        Eigen::VectorXd exp_val;
-        exp_val.resize(in_val.size());
-        for (int i = 0; i < in_val.size(); i++) {
-            exp_val(i) = std::exp(in_val(i) - min_val);
+        Eigen::VectorXd exp_mat;
+        exp_mat.resize(in_mat.size());
+        for (int i = 0; i < in_mat.size(); i++) {
+            exp_mat(i) = std::exp(in_mat(i) - min_mat);
         }
-        return exp_val;
+        return exp_mat;
     }
     // TODO
-    Eigen::VectorXd backward(Eigen::VectorXd in_val)
+    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
 
 private:
@@ -78,17 +78,17 @@ class Sigmoid : public AbstLayer
 public:
     explicit Sigmoid() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_val)
+    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
     {
-        Eigen::VectorXd out_val;
-        for (int i = 0; i < in_val.size(); i++) {
-            out_val(i) = 1.0 + (1.0 + exp(-in_val(i)));
+        Eigen::VectorXd out_mat;
+        for (int i = 0; i < in_mat.size(); i++) {
+            out_mat(i) = 1.0 + (1.0 + exp(-in_mat(i)));
         }
-        return out_val;
+        return out_mat;
     }
-    Eigen::VectorXd backward(Eigen::VectorXd in_val)
+    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
 
 private:
@@ -99,17 +99,17 @@ class Relu : public AbstLayer
 public:
     explicit Relu() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_val)
+    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
     {
-        Eigen::VectorXd out_val;
-        for (int i = 0; i < in_val.size(); i++) {
-            out_val(i) = (in_val(i) > 0) ? in_val(i) : 0;
+        Eigen::VectorXd out_mat;
+        for (int i = 0; i < in_mat.size(); i++) {
+            out_mat(i) = (in_mat(i) > 0) ? in_mat(i) : 0;
         }
-        return out_val;
+        return out_mat;
     }
-    Eigen::VectorXd backward(Eigen::VectorXd in_val)
+    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
     {
-        return in_val;
+        return in_mat;
     }
 
 private:

@@ -4,7 +4,8 @@
 #pragma once
 
 #include <memory>
-#include "dnn/util.hpp"
+#include <Eigen/Geometry>
+#include "dnn/assert.hpp"
 
 namespace MachineLearning
 {
@@ -19,7 +20,7 @@ public:
     explicit AbstLayer(int neuron_num)
         : m_neuron_num(neuron_num)
     {
-        DYNAMIC_ASSERT(neuron_num < 1, "InputNum should be more than zero");
+        DYNAMIC_ASSERT(neuron_num < 1, "InputNum should be more than zero.");
     }
     /*
      * input_num を指定するコンストラクタ
@@ -27,22 +28,22 @@ public:
     explicit AbstLayer(int neuron_num, int input_num)
         : m_neuron_num(neuron_num), m_input_num(input_num)
     {
-        DYNAMIC_ASSERT(input_num == 0, "InputNum cannot be 0");
+        DYNAMIC_ASSERT(input_num < 1, "InputNum should be more than 0.");
         initWeights();
     }
 
-    virtual Eigen::VectorXd forward(Eigen::VectorXd /* in_val */) = 0;
-    virtual Eigen::VectorXd backward(Eigen::VectorXd /* in_val */) = 0;
+    virtual Eigen::VectorXd forward(Eigen::VectorXd /* in_mat */) = 0;
+    virtual Eigen::VectorXd backward(Eigen::VectorXd /* in_mat */) = 0;
 
     void setInputNum(int input_num)
     {
-        DYNAMIC_ASSERT(m_input_num != 0, "InputNum is settled automatically");
+        DYNAMIC_ASSERT(input_num < 1, "InputNum should be more than zero.");
         m_input_num = input_num;
         initWeights();
     }
     void setNeuronNum(int neuron_num)
     {
-        DYNAMIC_ASSERT(m_neuron_num != 0, "NeuronNum is settled automatically");
+        DYNAMIC_ASSERT(neuron_num < 1, "NeuronNum should be more than zero.");
         m_neuron_num = neuron_num;
         initWeights();
     }
@@ -53,6 +54,7 @@ public:
 protected:
     void initWeights()
     {
+        // TODO 初期化方法
         m_weights.resize(m_neuron_num, m_input_num);
         for (int i = 0; i < m_neuron_num; i++) {
             for (int j = 0; j < m_input_num; j++) {
