@@ -29,7 +29,7 @@ public:
         : m_neuron_num(neuron_num), m_input_num(input_num)
     {
         DYNAMIC_ASSERT(input_num < 1, "InputNum should be more than 0.");
-        initWeights();
+        initNetwork();
     }
 
     virtual Eigen::VectorXd forward(Eigen::VectorXd /* in_mat */) = 0;
@@ -39,33 +39,37 @@ public:
     {
         DYNAMIC_ASSERT(input_num < 1, "InputNum should be more than zero.");
         m_input_num = input_num;
-        initWeights();
+        initNetwork();
     }
     void setNeuronNum(int neuron_num)
     {
         DYNAMIC_ASSERT(neuron_num < 1, "NeuronNum should be more than zero.");
         m_neuron_num = neuron_num;
-        initWeights();
+        initNetwork();
     }
 
     int getInputNum() const { return m_input_num; }
     int getNeuronNum() const { return m_neuron_num; }
 
 protected:
-    void initWeights()
+    void initNetwork()
     {
         // TODO 初期化方法
-        m_weights.resize(m_neuron_num, m_input_num);
+        m_weight_mat.resize(m_neuron_num, m_input_num);
         for (int i = 0; i < m_neuron_num; i++) {
             for (int j = 0; j < m_input_num; j++) {
-                m_weights(i, j) = 0;
+                m_weight_mat(i, j) = 0;
             }
         }
+
+        m_out_vec.resize(m_neuron_num);
     }
 
-    Eigen::MatrixXd m_weights;
+    Eigen::MatrixXd m_weight_mat;
     int m_neuron_num = 0;
     int m_input_num = 0;
+
+    Eigen::VectorXd m_out_vec;
 };
 
 }  // namespace of MachineLearning

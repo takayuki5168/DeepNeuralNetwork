@@ -9,23 +9,23 @@ class Dense : public AbstLayer
 {
 public:
     explicit Dense(int neuron_num)
-        : AbstLayer(neuron_num) {}
+        : AbstLayer(neuron_num) { m_bias_vec.resize(neuron_num); }
     explicit Dense(int neuron_num, int input_num)
-        : AbstLayer(neuron_num, input_num) {}
+        : AbstLayer(neuron_num, input_num) { m_bias_vec.resize(neuron_num); }
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_mat) override
+    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
-        Eigen::VectorXd out_mat;
-        out_mat = in_mat * m_weights;
-        return out_mat;
+        m_out_vec = in_vec * m_weight_mat + m_bias_vec;
+        return m_out_vec;
     }
     // TODO
-    Eigen::VectorXd backward(Eigen::VectorXd in_mat) override
+    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override
     {
-        return in_mat;
+        return in_vec;
     }
 
 private:
+    Eigen::VectorXd m_bias_vec;
 };
 
 }  // namespace of MachineLearning
