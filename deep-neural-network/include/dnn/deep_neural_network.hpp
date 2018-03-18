@@ -35,7 +35,7 @@ public:
     {
         Eigen::MatrixXd output_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            output_mat = m_layers.at(i)->forward(input_mat);
+            output_mat = m_layers.at(i)->forwardWithPredict(input_mat);
             input_mat = output_mat;
         }
         return output_mat;

@@ -16,6 +16,7 @@ public:
         m_mask_vec.resize(m_neuron_num);
     }
 
+private:
     Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
         // TODO 乱数がうまく出ているか
@@ -36,7 +37,6 @@ public:
         return in_vec;
     }
 
-private:
     const double m_rate = 0.0;
 
     std::random_device rnd;

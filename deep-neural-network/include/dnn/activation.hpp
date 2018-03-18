@@ -45,6 +45,7 @@ class Softmax : public AbstLayer
 public:
     explicit Softmax() : AbstLayer() {}
 
+private:
     Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
         double max_vec = in_vec(0);
@@ -69,8 +70,6 @@ public:
     {
         return in_vec;
     }
-
-private:
 };
 
 class Sigmoid : public AbstLayer
@@ -78,6 +77,7 @@ class Sigmoid : public AbstLayer
 public:
     explicit Sigmoid() : AbstLayer() {}
 
+private:
     Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
         for (int i = 0; i < in_vec.size(); i++) {
@@ -92,8 +92,6 @@ public:
         }
         return in_vec;
     }
-
-private:
 };
 
 class Relu : public AbstLayer
@@ -101,6 +99,7 @@ class Relu : public AbstLayer
 public:
     explicit Relu() : AbstLayer() {}
 
+private:
     Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
         for (int i = 0; i < in_vec.size(); i++) {
@@ -115,8 +114,6 @@ public:
         }
         return in_vec;
     }
-
-private:
 };
 
 }  // namespace of MachineLearning

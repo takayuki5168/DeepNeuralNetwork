@@ -32,8 +32,10 @@ public:
         initNetwork();
     }
 
-    virtual Eigen::VectorXd forward(Eigen::VectorXd /* in_mat */) = 0;
-    virtual Eigen::VectorXd backward(Eigen::VectorXd /* in_mat */) = 0;
+    virtual Eigen::VectorXd forwardWithPredict(Eigen::VectorXd in_vec) { return forward(in_vec); }
+    virtual Eigen::VectorXd forwardWithFit(Eigen::VectorXd in_vec) { return forward(in_vec); }
+    virtual Eigen::VectorXd backwardWithPredict(Eigen::VectorXd in_vec) { return backward(in_vec); }
+    virtual Eigen::VectorXd backwardWithFit(Eigen::VectorXd in_vec) { return backward(in_vec); }
 
     void setInputNum(int input_num)
     {
@@ -64,6 +66,9 @@ protected:
 
         m_out_vec.resize(m_neuron_num);
     }
+
+    virtual Eigen::VectorXd forward(Eigen::VectorXd /* in_vec */) = 0;
+    virtual Eigen::VectorXd backward(Eigen::VectorXd /* in_vec */) = 0;
 
     Eigen::MatrixXd m_weight_mat;
     int m_neuron_num = 0;

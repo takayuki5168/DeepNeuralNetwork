@@ -13,6 +13,7 @@ public:
     explicit Dense(int neuron_num, int input_num)
         : AbstLayer(neuron_num, input_num) { m_bias_vec.resize(neuron_num); }
 
+private:
     Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
     {
         m_out_vec = in_vec * m_weight_mat + m_bias_vec;
@@ -24,7 +25,6 @@ public:
         return in_vec;
     }
 
-private:
     Eigen::VectorXd m_bias_vec;
 };
 
