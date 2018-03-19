@@ -18,27 +18,40 @@ public:
     void add(std::unique_ptr<AbstLayer>&& layer)
     {
         if (not m_layers.empty()) {  // This layer is not input layer
-            layer->setInputNum(m_layers.back()->getInputNum());
+            layer->setInNum(m_layers.back()->getInNum());
         }
         if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
-            layer->setInputNum(m_layers.back()->getNeuronNum());
+            layer->setInNum(m_layers.back()->getNeuronNum());
             layer->setNeuronNum(m_layers.back()->getNeuronNum());
         }
         m_layers.push_back(std::move(layer));
     }
 
-    void fit(Eigen::MatrixXd /* input_mat */)
+    void fit(const Eigen::MatrixXd& in_mat)
     {
-    }
-
-    Eigen::MatrixXd predict(Eigen::MatrixXd input_mat)
-    {
-        Eigen::MatrixXd output_mat;
+        Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            output_mat = m_layers.at(i)->forwardWithPredict(input_mat);
+            m_layers.at(i)->forwardWithFit(next_in_mat);
+            next_in_mat = m_layers.at(i)->getOutMat();
+        }
+
+        //input_mat = ;
+        /*
+        for (unsigned int i = 0; i < m_layers.size(); i++) {
+            output_mat = m_layers.at(m_layers.size() - i - 1)->backwardWithFit(input_mat);
             input_mat = output_mat;
         }
-        return output_mat;
+        */
+    }
+
+    Eigen::MatrixXd predict(const Eigen::MatrixXd& in_mat)
+    {
+        Eigen::MatrixXd next_in_mat = in_mat;
+        for (unsigned int i = 0; i < m_layers.size(); i++) {
+            m_layers.at(i)->forwardWithPredict(in_mat);
+            next_in_mat = m_layers.at(i)->getOutMat();
+        }
+        return next_in_mat;
     }
 
     //void compile(std::function<> loss, std::unique_ptr<Optimizer> optimizer) {}

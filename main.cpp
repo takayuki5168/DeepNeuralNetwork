@@ -11,10 +11,10 @@ int main()
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(10));
     dnn->add(std::make_unique<Softmax>());
-    dnn->add(std::make_unique<Dropout>(0.1));
+    //dnn->add(std::make_unique<Dropout>(0.1));
     dnn->add(std::make_unique<Dense>(10));
     dnn->add(std::make_unique<Relu>());
-    dnn->add(std::make_unique<Dropout>(0.1));
+    //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
     //dnn->compile(Crossentropy(), Adam());

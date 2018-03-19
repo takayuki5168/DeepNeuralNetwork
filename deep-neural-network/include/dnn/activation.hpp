@@ -11,8 +11,8 @@ class Identify : public AbstLayer
 public:
     explicit Identify() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override { return in_vec; }
-    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override { return in_vec; }
+    Eigen::MatrixXd forward(Eigen::MatrixXd in_mat) override { return in_mat; }
+    Eigen::MatrixXd backward(Eigen::MatrixXd in_mat) override { return in_mat; }
 
 private:
 };
@@ -22,18 +22,18 @@ class Step : public AbstLayer
 public:
     explicit Step() : AbstLayer() {}
 
-    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
+    Eigen::MatrixXd forward(Eigen::MatrixXd in_mat) override
     {
-        Eigen::VectorXd out_vec;
-        for (int i = 0; i < in_vec.size(); i++) {
-            out_vec(i) = (in_vec(i) > 0) ? 1 : 0;
+        Eigen::MatrixXd out_mat;
+        for (int i = 0; i < in_mat.size(); i++) {
+            out_mat(i) = (in_mat(i) > 0) ? 1 : 0;
         }
-        return out_vec;
+        return out_mat;
     }
     // TODO
-    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override
+    Eigen::MatrixXd backward(Eigen::MatrixXd in_mat) override
     {
-        return in_vec;
+        return in_mat;
     }
 
 private:
@@ -46,29 +46,42 @@ public:
     explicit Softmax() : AbstLayer() {}
 
 private:
-    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
+    void forward(const Eigen::MatrixXd& in_mat) override
     {
-        double max_vec = in_vec(0);
-        for (int i = 0; i < in_vec.size(); i++) {
-            max_vec = (max_vec > in_vec(i)) ? in_vec(i) : max_vec;
+        m_in_mat = in_mat;
+
+        // calc max vector of each column of in_mat
+        m_out_mat.resize(in_mat.rows(), in_mat.cols());
+        Eigen::VectorXd max_vec = in_mat.block(0, 0, 1, in_mat.cols());
+        for (int i = 0; i < in_mat.cols(); i++) {
+            // CHECK
+            for (int j = 0; j < in_mat.rows(); j++) {
+                max_vec(i) = (max_vec(i) > in_mat(j, i)) ? max_vec(i) : in_mat(j, i);
+            }
         }
 
-        Eigen::VectorXd exp_vec;
-        exp_vec.resize(in_vec.size());
-        for (int i = 0; i < in_vec.size(); i++) {
-            exp_vec(i) = std::exp(in_vec(i) - max_vec);
-        }
+        // calc exponential mat
+        Eigen::MatrixXd exp_mat;
+        exp_mat.resize(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.cols(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                exp_mat(j, i) = std::exp(in_mat(j, i) - max_vec(i));
+            }
 
-        double sum_exp = 0.0;
-        for (int i = 0; i < exp_vec.size(); i++) {
-            sum_exp += exp_vec(i);
+            double sum_val = 0.0;
+            for (int j = 0; j < in_mat.rows(); j++) {
+                sum_val += exp_mat(j, i);
+            }
+
+            for (int j = 0; j < in_mat.rows(); j++) {
+                exp_mat(j, i) = exp_mat(j, i) / sum_val;
+            }
         }
-        return exp_vec / sum_exp;
+        m_out_mat = exp_mat;
     }
     // TODO
-    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override
+    void backward(const Eigen::MatrixXd& /*in_mat*/) override
     {
-        return in_vec;
     }
 };
 
@@ -78,19 +91,27 @@ public:
     explicit Sigmoid() : AbstLayer() {}
 
 private:
-    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
+    void forward(const Eigen::MatrixXd& in_mat) override
     {
-        for (int i = 0; i < in_vec.size(); i++) {
-            m_out_vec(i) = 1.0 / (1.0 + std::exp(-in_vec(i)));
+        m_in_mat = in_mat;
+
+        m_out_mat.resize(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.size(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                m_out_mat(j, i) = 1.0 / (1.0 + std::exp(-in_mat(j, i)));
+            }
         }
-        return m_out_vec;
     }
-    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override
+    void backward(const Eigen::MatrixXd& in_mat) override
     {
-        for (int i = 0; i < in_vec.size(); i++) {
-            in_vec(i) = in_vec(i) * (1.0 - m_out_vec(i)) * m_out_vec(i);
+        m_back_in_mat = in_mat;
+
+        m_back_out_mat.resize(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.size(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                m_back_out_mat(i) = in_mat(j, i) * (1.0 - m_out_mat(j, i)) * m_out_mat(j, i);
+            }
         }
-        return in_vec;
     }
 };
 
@@ -100,19 +121,27 @@ public:
     explicit Relu() : AbstLayer() {}
 
 private:
-    Eigen::VectorXd forward(Eigen::VectorXd in_vec) override
+    void forward(const Eigen::MatrixXd& in_mat) override
     {
-        for (int i = 0; i < in_vec.size(); i++) {
-            m_out_vec(i) = (in_vec(i) > 0) ? in_vec(i) : 0;
+        m_in_mat = in_mat;
+
+        m_out_mat.resize(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.cols(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                m_back_out_mat(j, i) = (in_mat(j, i) > 0) ? in_mat(j, i) : 0;
+            }
         }
-        return m_out_vec;
     }
-    Eigen::VectorXd backward(Eigen::VectorXd in_vec) override
+    void backward(const Eigen::MatrixXd& in_mat) override
     {
-        for (int i = 0; i < in_vec.size(); i++) {
-            in_vec(i) = (in_vec(i) > 0) ? in_vec(i) : 0;
+        m_back_in_mat = in_mat;
+
+        m_back_out_mat.resize(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.cols(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                m_back_out_mat(j, i) = (in_mat(j, i) > 0) ? in_mat(j, i) : 0;
+            }
         }
-        return in_vec;
     }
 };
 
