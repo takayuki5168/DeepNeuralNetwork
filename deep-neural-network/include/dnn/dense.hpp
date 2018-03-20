@@ -19,9 +19,9 @@ public:
         m_bias_vec.resize(m_neuron_num);
         for (int i = 0; i < m_neuron_num; i++) {
             for (int j = 0; j < m_in_num; j++) {
-                m_weight_mat(i, j) = 0;
+                m_weight_mat(i, j) = 1.0;
             }
-            m_bias_vec(i) = 0;
+            m_bias_vec(i) = 1.0;
         }
     }
 

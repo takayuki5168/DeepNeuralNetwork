@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(NeuralNetwork CXX)
+project(NeuralNetwork)
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=gnu++14" COMPILER_SUPPORTS_CXX14)
@@ -36,9 +36,7 @@ add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_ZERO)
 include_directories(DEEP_NEURAL_NETWORK ${CMAKE_CURRENT_LIST_DIR}/deep-neural-network/include/)
 
 # Sources and headers
-file(GLOB SOURCES ${CMAKE_CURRENT_LIST_DIR} main.cpp)
-#list(APPEND SOURCES ${SUB_SOURCES})
-#include_directories(${CMAKE_CURRENT_LIST_DIR})
+file(GLOB MAIN_SOURCE ${CMAKE_CURRENT_LIST_DIR} main.cpp)
 
 # Echo compile flags
 message("Build type:\n\t${CMAKE_BUILD_TYPE}")
@@ -50,9 +48,24 @@ else()
     message("Compile flags:\n\t${CMAKE_CXX_FLAGS}")
 endif()
 
+# GoogleTest
+set(GOOGLETEST_DIR ${CMAKE_CURRENT_LIST_DIR}/external/googletest/googletest)
+add_subdirectory(${GOOGLETEST_DIR})
+include_directories(SYSTEM ${GOOGLETEST_DIR}/include/)
+function(generate_gtest name)
+    add_executable(${name}_gtest
+        ${CMAKE_CURRENT_LIST_DIR}/test/${name}.cpp
+        deep-neural-network/)
+    target_link_libraries(${name}_gtest
+        gtest
+        gtest_main)
+endfunction()
+generate_gtest(dense)
+generate_gtest(activation)
+
 # Build main
 add_executable(main 
-    ${SOURCES}
+    ${MAIN_SOURCE}
     deep-neural-network/)
 target_link_libraries(main
     #${Boost_LIBRARIES}
