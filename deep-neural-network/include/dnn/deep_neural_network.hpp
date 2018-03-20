@@ -19,11 +19,13 @@ public:
     {
         if (not m_layers.empty()) {  // This layer is not input layer
             layer->setInNum(m_layers.back()->getInNum());
+            DYNAMIC_ASSERT(layer->getNeuronNum() > 0, "NeuronNum should be more than zero.");
         }
         if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
             layer->setInNum(m_layers.back()->getNeuronNum());
             layer->setNeuronNum(m_layers.back()->getNeuronNum());
         }
+        layer->initNetwork();
         m_layers.push_back(std::move(layer));
     }
 
@@ -32,7 +34,10 @@ public:
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
             m_layers.at(i)->forwardWithFit(next_in_mat);
-            next_in_mat = m_layers.at(i)->getOutMat();
+            Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
+
+            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            next_in_mat = tmp_mat;
         }
 
         //input_mat = ;
@@ -49,7 +54,10 @@ public:
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
             m_layers.at(i)->forwardWithPredict(in_mat);
-            next_in_mat = m_layers.at(i)->getOutMat();
+            Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
+
+            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            next_in_mat = tmp_mat;
         }
         return next_in_mat;
     }

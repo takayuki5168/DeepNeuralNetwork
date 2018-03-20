@@ -1,3 +1,7 @@
+/*
+ * @file    activation.hpp
+ * @brief   some classes of Activation
+ */
 #pragma once
 
 #include "dnn/abst_layer.hpp"
@@ -40,6 +44,9 @@ private:
 };
 */
 
+/*
+ * @brief   Softmax
+ */
 class Softmax : public AbstLayer
 {
 public:
@@ -79,9 +86,23 @@ private:
         }
         m_out_mat = exp_mat;
     }
-    // TODO
-    void backward(const Eigen::MatrixXd& /*in_mat*/) override
+    void backward(const Eigen::MatrixXd& back_in_mat) override
     {
+        m_back_in_mat = back_in_mat;
+
+        Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(back_in_mat.cols());
+        m_back_out_mat.resize(back_in_mat.rows(), back_in_mat.cols());
+        for (int i = 0; i < back_in_mat.cols(); i++) {
+            for (int j = 0; j < back_in_mat.rows(); j++) {
+                sum_vec(i) += m_out_mat(j, i) * back_in_mat(j, i);
+            }
+        }
+
+        for (int i = 0; i < back_in_mat.cols(); i++) {
+            for (int j = 0; j < back_in_mat.rows(); j++) {
+                m_back_out_mat(j, i) = m_out_mat(j, i) * (back_in_mat(j, i) - sum_vec(i));
+            }
+        }
     }
 };
 
