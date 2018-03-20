@@ -1,3 +1,6 @@
 [submodule "external/Eigen"]
 	path = external/Eigen
 	url = https://github.com/RLovelett/eigen
+[submodule "external/googletest"]
+	path = external/googletest
+	url = https://github.com/google/googletest

@@ -17,8 +17,7 @@ int main()
     answer_data = answer_data.transpose();
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
-    dnn->add(std::make_unique<Dense>(4, 4));
-    dnn->add(std::make_unique<Dense>(10));
+    dnn->add(std::make_unique<Dense>(10, 4));
     dnn->add(std::make_unique<Dense>(4));
     //dnn->add(std::make_unique<Softmax>());
     //dnn->add(std::make_unique<Dropout>(0.1));
