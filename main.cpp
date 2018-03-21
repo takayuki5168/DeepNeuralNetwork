@@ -10,15 +10,15 @@ int main()
 
     Eigen::MatrixXd train_data(4, 2);
     train_data << 0, 0, 0, 1, 1, 0, 1, 1;
-    train_data = train_data.transpose();
+    train_data = train_data.transpose();  //!< in_num * train_data_num
 
-    Eigen::MatrixXd answer_data(4, 1);
+    Eigen::MatrixXd answer_data(1, 4);
     answer_data << 1, 0, 0, 1;
     answer_data = answer_data.transpose();
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
-    dnn->add(std::make_unique<Dense>(10, 4));
-    dnn->add(std::make_unique<Dense>(4));
+    dnn->add(std::make_unique<Dense>(10, 2));
+    dnn->add(std::make_unique<Dense>(1));
     //dnn->add(std::make_unique<Softmax>());
     //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<Dense>(10));

@@ -5,6 +5,7 @@ namespace
 {
 using namespace MachineLearning;
 
+/*
 TEST(SoftmaxTest, Forward)
 {
     Eigen::MatrixXd train_data(4, 2);
@@ -27,5 +28,6 @@ TEST(SoftmaxTest, Backward)
     softmax->forwardWithPredict(train_data);
     EXPECT_EQ(softmax->getOutMat(), train_data);
 }
+*/
 
 }  // anonymous namespace

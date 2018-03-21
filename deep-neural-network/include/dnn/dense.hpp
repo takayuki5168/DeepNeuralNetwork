@@ -9,14 +9,16 @@ class Dense : public AbstLayer
 {
 public:
     explicit Dense(int neuron_num)
-        : AbstLayer(neuron_num) { m_bias_vec.resize(neuron_num); }
+        : AbstLayer(neuron_num) {}
     explicit Dense(int neuron_num, int in_num)
-        : AbstLayer(neuron_num, in_num) { m_bias_vec.resize(neuron_num); }
+        : AbstLayer(neuron_num, in_num) {}
 
     virtual void initNetwork()
     {
         m_weight_mat.resize(m_neuron_num, m_in_num);
-        m_bias_vec.resize(m_neuron_num);
+        m_weight_mat = m_weight_mat.transpose();  //!< m_in_num * m_neuron_num
+        m_bias_vec.resize(m_neuron_num);          //!< m_neuron_num * 1
+
         for (int i = 0; i < m_neuron_num; i++) {
             for (int j = 0; j < m_in_num; j++) {
                 m_weight_mat(i, j) = 1.0;
@@ -37,6 +39,7 @@ private:
             bias_mat.col(i) = m_bias_vec;
         }
 
+        m_out_mat.resize(m_bias_vec.size(), in_mat.cols());
         m_out_mat = in_mat * m_weight_mat + bias_mat;
     }
     void backward(const Eigen::MatrixXd& in_mat) override
