@@ -8,16 +8,15 @@ int main()
 {
     using namespace MachineLearning;
 
-    Eigen::MatrixXd train_data(4, 2);
-    train_data << 0, 0, 0, 1, 1, 0, 1, 1;
-    train_data = train_data.transpose();  //!< in_num * train_data_num
+    Eigen::MatrixXd train_mat(2, 4);
+    train_mat << 0, 0, 1, 1, 0, 1, 0, 1;
 
-    Eigen::MatrixXd answer_data(1, 4);
-    answer_data << 1, 0, 0, 1;
-    answer_data = answer_data.transpose();
+    Eigen::MatrixXd answer_mat(1, 4);
+    answer_mat << 1, 0, 0, 1;
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(10, 2));
+    dnn->add(std::make_unique<Dense>(20));
     dnn->add(std::make_unique<Dense>(1));
     //dnn->add(std::make_unique<Softmax>());
     //dnn->add(std::make_unique<Dropout>(0.1));
@@ -28,8 +27,11 @@ int main()
 
     //dnn->compile(Crossentropy(), Adam());
 
-    //dnn->fit(train_data);
-    Eigen::MatrixXd out_mat = dnn->predict(train_data);
+    dnn->fit(train_data);
+    Eigen::MatrixXd out_mat = dnn->predict(train_mat);
+    std::cout << "==input==" << std::endl;
+    std::cout << train_mat << std::endl;
+    std::cout << "==output==" << std::endl;
     std::cout << out_mat << std::endl;
 
 

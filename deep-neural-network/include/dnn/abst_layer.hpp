@@ -1,5 +1,6 @@
 /*
- *
+ * @file    abst_layer.hpp
+ * @brief   AbstLayerクラス
  */
 #pragma once
 
@@ -30,20 +31,20 @@ public:
     virtual void forwardWithFit(const Eigen::MatrixXd& in_mat) { forward(in_mat); }
     virtual void backwardWithFit(const Eigen::MatrixXd& in_mat) { backward(in_mat); }
 
-    void gradDescent(Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat)
+    Eigen::MatrixXd gradDescent(const Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat)
     {
-        mat = mat - 0.1 * d_mat;
+        return mat - 0.1 * d_mat;
     }
 
     void setInNum(int in_num)
     {
-        m_in_num = in_num;
         DYNAMIC_ASSERT(in_num > 0, "InNum should be more than zero.");
+        m_in_num = in_num;
     }
     void setNeuronNum(int neuron_num)
     {
-        m_neuron_num = neuron_num;
         DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
+        m_neuron_num = neuron_num;
     }
 
     virtual void initNetwork() {}

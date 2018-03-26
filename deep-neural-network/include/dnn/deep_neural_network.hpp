@@ -36,27 +36,24 @@ public:
             m_layers.at(i)->forwardWithFit(next_in_mat);
             Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
 
-            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
 
-        //input_mat = ;
-        /*
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            output_mat = m_layers.at(m_layers.size() - i - 1)->backwardWithFit(input_mat);
-            input_mat = output_mat;
+            m_layers.at(m_layers.size() - i - 1)->backwardWithFit(next_in_mat);
+            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->getMat();
+            next_in_mat = tmp_mat;
         }
-        */
     }
 
     Eigen::MatrixXd predict(const Eigen::MatrixXd& in_mat)
     {
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            m_layers.at(i)->forwardWithPredict(in_mat);
+            m_layers.at(i)->forwardWithPredict(next_in_mat);
             Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
 
-            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            //next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
         return next_in_mat;

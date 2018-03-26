@@ -1,6 +1,6 @@
 /*
  * @file    activation.hpp
- * @brief   some classes of Activation
+ * @brief   Activationクラス群
  */
 #pragma once
 
