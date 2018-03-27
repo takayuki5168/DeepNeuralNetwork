@@ -47,13 +47,14 @@ private:
 /*
  * @brief   Softmax
  */
+/*
 class Softmax : public AbstLayer
 {
 public:
     explicit Softmax() : AbstLayer() {}
 
 private:
-    void forward(const Eigen::MatrixXd& in_mat) override
+    Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat) override
     {
         m_in_mat = in_mat;
 
@@ -165,5 +166,6 @@ private:
         }
     }
 };
+*/
 
 }  // namespace of MachineLearning

@@ -27,13 +27,12 @@ public:
         DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than 0.");
     }
 
-    virtual void forwardWithPredict(const Eigen::MatrixXd& in_mat) { forward(in_mat); }
-    virtual void forwardWithFit(const Eigen::MatrixXd& in_mat) { forward(in_mat); }
-    virtual void backwardWithFit(const Eigen::MatrixXd& in_mat) { backward(in_mat); }
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& /*in_mat*/, bool /*train_flag*/) = 0;
+    virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& /*in_mat*/) = 0;
 
-    Eigen::MatrixXd gradDescent(const Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat)
+    Eigen::MatrixXd gradDescent(const Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat) const
     {
-        return mat - 0.1 * d_mat;
+        return mat - 0.01 * d_mat;
     }
 
     void setInNum(int in_num)
@@ -51,22 +50,20 @@ public:
 
     int getInNum() const { return m_in_num; }
     int getNeuronNum() const { return m_neuron_num; }
-    Eigen::MatrixXd getOutMat() const { return m_out_mat; }
 
 protected:
-    virtual void forward(const Eigen::MatrixXd& /*in_mat*/) {}
-    virtual void backward(const Eigen::MatrixXd& /*in_mat*/) {}
-
     int m_neuron_num = 0;  //!< 層のニューロンの個数
     int m_in_num = 0;      //!< 入力エッジの本数
 
-    Eigen::MatrixXd m_weight_mat;  //!< 重み行列
-    Eigen::VectorXd m_bias_vec;    //!< 重み行列
+    Eigen::MatrixXd m_weight_mat;  //!< 重み行列 (m_in_num + 1) * m_neuron_num
+    Eigen::MatrixXd m_d_weight_mat;
 
-    Eigen::MatrixXd m_in_mat;        //!< 入力行列
+    Eigen::MatrixXd m_in_mat;  //!< 入力行列
+    /*
     Eigen::MatrixXd m_out_mat;       //!< 出力行列
     Eigen::MatrixXd m_back_in_mat;   //!< 入力行列
     Eigen::MatrixXd m_back_out_mat;  //!< 出力行列
+    */
 };
 
-}  // namespace of MachineLearning
+}  // namespace MachineLearning

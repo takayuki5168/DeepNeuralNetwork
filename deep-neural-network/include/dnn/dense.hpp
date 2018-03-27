@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 #include "dnn/abst_layer.hpp"
 
 namespace MachineLearning
@@ -15,49 +16,54 @@ public:
 
     virtual void initNetwork()
     {
-        m_weight_mat.resize(m_neuron_num, m_in_num);
-        m_weight_mat = m_weight_mat.transpose();  //!< m_in_num * m_neuron_num
-        m_bias_vec.resize(m_neuron_num);          //!< m_neuron_num * 1
+        std::random_device rand;
+        std::mt19937 mt;
+        mt.seed(rand());
+        m_weight_mat.resize(m_in_num + 1, m_neuron_num);
+        m_d_weight_mat.resize(m_weight_mat.rows(), m_weight_mat.cols());
 
-        for (int i = 0; i < m_neuron_num; i++) {
-            for (int j = 0; j < m_in_num; j++) {
-                m_weight_mat(i, j) = 1.0;
+        for (int i = 0; i < m_weight_mat.rows(); i++) {
+            for (int j = 0; j < m_weight_mat.cols(); j++) {
+                m_weight_mat(i, j) = (mt() % 1000 - 500.0) / 500;
             }
-            m_bias_vec(i) = 1.0;
         }
+        /*
+        std::cout << "[Init Weight]" << std::endl;
+        std::cout << m_weight_mat << std::endl;
+        */
+    }
+
+    Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
+    {
+        // init X
+        m_in_mat.resize(in_mat.rows(), in_mat.cols() + 1);
+        m_in_mat = Eigen::MatrixXd::Ones(in_mat.rows(), in_mat.cols() + 1);
+        m_in_mat.block(0, 1, in_mat.rows(), in_mat.cols()) = in_mat;
+
+        // Y = XW
+        Eigen::MatrixXd out_mat = m_in_mat * m_weight_mat;
+
+        /*
+        std::cout << "[Forward]" << std::endl;
+        std::cout << in_mat << std::endl;
+        */
+        std::cout << m_in_mat << std::endl;
+        std::cout << m_weight_mat << std::endl;
+        std::cout << "[Forward] out_mat" << std::endl;
+        std::cout << out_mat << std::endl;
+
+        return out_mat;
+    }
+
+    Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
+    {
+        m_d_weight_mat = m_in_mat.transpose() * in_mat;
+        m_weight_mat = gradDescent(m_weight_mat, m_d_weight_mat);
+
+        return (in_mat * m_weight_mat.transpose()).block(0, 1, in_mat.rows(), in_mat.cols());
     }
 
 private:
-    void forward(const Eigen::MatrixXd& in_mat) override
-    {
-        m_in_mat = in_mat;
-
-        // transform bias vector to bias matrix
-        Eigen::MatrixXd bias_mat(m_bias_vec.size(), in_mat.cols());
-        for (int i = 0; i < bias_mat.cols(); i++) {
-            //bias_mat.block(0, i, in_mat.cols(), 1) = m_bias_vec;
-            bias_mat.col(i) = m_bias_vec;
-        }
-
-        m_out_mat.resize(m_bias_vec.size(), in_mat.cols());
-        m_out_mat = in_mat * m_weight_mat + bias_mat;
-    }
-    void backward(const Eigen::MatrixXd& in_mat) override
-    {
-        m_back_in_mat = in_mat;
-
-        // update weight matrix
-        Eigen::MatrixXd d_weight_mat = m_in_mat.transpose() * in_mat;
-        gradDescent(m_weight_mat, d_weight_mat);
-
-        // update bias vector
-        Eigen::MatrixXd d_bias_mat = in_mat;
-        gradDescent(m_weight_mat, d_weight_mat);
-
-        m_back_out_mat = in_mat * m_weight_mat.transpose();
-    }
-
-    //Eigen::VectorXd m_bias_vec;  //!< bias vector
 };
 
-}  // namespace of MachineLearning
+}  // namespace MachineLearning

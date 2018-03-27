@@ -17,32 +17,49 @@ public:
     explicit DeepNeuralNetwork() {}
     void add(std::unique_ptr<AbstLayer>&& layer)
     {
-        if (not m_layers.empty()) {  // This layer is not input layer
-            layer->setInNum(m_layers.back()->getInNum());
+        if (not m_layers.empty()) {            // This layer is not input layer
+            if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
+                layer->setInNum(m_layers.back()->getNeuronNum());
+                layer->setNeuronNum(m_layers.back()->getNeuronNum());
+            } else if (layer->getInNum() == 0) {  // NeuronNum was not settled
+                layer->setInNum(m_layers.back()->getNeuronNum());
+            }
             DYNAMIC_ASSERT(layer->getNeuronNum() > 0, "NeuronNum should be more than zero.");
-        }
-        if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
-            layer->setInNum(m_layers.back()->getNeuronNum());
-            layer->setNeuronNum(m_layers.back()->getNeuronNum());
+        } else {                               // This layer is input layer
+            if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
+                layer->setInNum(m_layers.back()->getNeuronNum());
+                layer->setNeuronNum(m_layers.back()->getNeuronNum());
+            }
         }
         layer->initNetwork();
         m_layers.push_back(std::move(layer));
+
+        d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) {
+            // Eigen::MatrixXd res_mat;
+            // res_mat.resize(in_mat.rows(), in_mat.cols());
+            return 2 * (in_mat - ans_mat);
+        };
     }
 
-    void fit(const Eigen::MatrixXd& in_mat)
+    void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& answer_mat)
     {
-        Eigen::MatrixXd next_in_mat = in_mat;
-        for (unsigned int i = 0; i < m_layers.size(); i++) {
-            m_layers.at(i)->forwardWithFit(next_in_mat);
-            Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
-
-            next_in_mat = tmp_mat;
+        {  // forward
+            Eigen::MatrixXd next_in_mat = in_mat;
+            for (unsigned int i = 0; i < m_layers.size(); i++) {
+                Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
+                next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+                next_in_mat = tmp_mat;
+            }
         }
 
-        for (unsigned int i = 0; i < m_layers.size(); i++) {
-            m_layers.at(m_layers.size() - i - 1)->backwardWithFit(next_in_mat);
-            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->getMat();
-            next_in_mat = tmp_mat;
+        {  // backward
+            Eigen::MatrixXd next_in_mat = d_loss_func(next_in_mat, answer_mat);
+
+            for (unsigned int i = 0; i < m_layers.size(); i++) {
+                Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
+                next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+                next_in_mat = tmp_mat;
+            }
         }
     }
 
@@ -50,10 +67,8 @@ public:
     {
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            m_layers.at(i)->forwardWithPredict(next_in_mat);
-            Eigen::MatrixXd tmp_mat = m_layers.at(i)->getOutMat();
-
-            //next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, false);
+            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
         return next_in_mat;
@@ -63,6 +78,7 @@ public:
 
 private:
     std::vector<std::unique_ptr<AbstLayer>> m_layers;
+    std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> d_loss_func;
 };
 
 }  // namespace of MachineLearning
