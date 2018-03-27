@@ -35,31 +35,33 @@ public:
         m_layers.push_back(std::move(layer));
 
         d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) {
-            // Eigen::MatrixXd res_mat;
-            // res_mat.resize(in_mat.rows(), in_mat.cols());
-            return 2 * (in_mat - ans_mat);
+            return (in_mat - ans_mat);
         };
     }
 
-    void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& answer_mat)
+    void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
     {
-        {  // forward
-            Eigen::MatrixXd next_in_mat = in_mat;
-            for (unsigned int i = 0; i < m_layers.size(); i++) {
-                Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
-                next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
-                next_in_mat = tmp_mat;
-            }
+        // forward
+        Eigen::MatrixXd next_in_mat = in_mat;
+        for (unsigned int i = 0; i < m_layers.size(); i++) {
+            Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
+            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            next_in_mat = tmp_mat;
         }
 
-        {  // backward
-            Eigen::MatrixXd next_in_mat = d_loss_func(next_in_mat, answer_mat);
+        // backward
+        Eigen::MatrixXd tmp_mat = d_loss_func(next_in_mat, ans_mat);
+        std::cout << "[Backward]" << std::endl;
+        std::cout << next_in_mat << std::endl;
+        std::cout << ans_mat << std::endl;
 
-            for (unsigned int i = 0; i < m_layers.size(); i++) {
-                Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
-                next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
-                next_in_mat = tmp_mat;
-            }
+        next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+        next_in_mat = tmp_mat;
+
+        for (unsigned int i = 0; i < m_layers.size(); i++) {
+            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
+            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+            next_in_mat = tmp_mat;
         }
     }
 

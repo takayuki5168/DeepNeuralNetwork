@@ -46,11 +46,12 @@ public:
         /*
         std::cout << "[Forward]" << std::endl;
         std::cout << in_mat << std::endl;
-        */
         std::cout << m_in_mat << std::endl;
         std::cout << m_weight_mat << std::endl;
         std::cout << "[Forward] out_mat" << std::endl;
         std::cout << out_mat << std::endl;
+        std::cout << "[Forward] end" << std::endl;
+        */
 
         return out_mat;
     }

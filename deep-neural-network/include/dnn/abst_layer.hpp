@@ -32,7 +32,7 @@ public:
 
     Eigen::MatrixXd gradDescent(const Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat) const
     {
-        return mat - 0.01 * d_mat;
+        return mat - 0.1 * d_mat;
     }
 
     void setInNum(int in_num)
@@ -59,11 +59,6 @@ protected:
     Eigen::MatrixXd m_d_weight_mat;
 
     Eigen::MatrixXd m_in_mat;  //!< 入力行列
-    /*
-    Eigen::MatrixXd m_out_mat;       //!< 出力行列
-    Eigen::MatrixXd m_back_in_mat;   //!< 入力行列
-    Eigen::MatrixXd m_back_out_mat;  //!< 出力行列
-    */
 };
 
 }  // namespace MachineLearning

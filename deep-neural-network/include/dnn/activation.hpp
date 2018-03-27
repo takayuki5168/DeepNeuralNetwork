@@ -137,35 +137,38 @@ private:
     }
 };
 
+*/
 class Relu : public AbstLayer
 {
 public:
     explicit Relu() : AbstLayer() {}
 
-private:
-    void forward(const Eigen::MatrixXd& in_mat) override
+    Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
     {
+        m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
 
-        m_out_mat.resize(in_mat.rows(), in_mat.cols());
-        for (int i = 0; i < in_mat.cols(); i++) {
-            for (int j = 0; j < in_mat.rows(); j++) {
-                m_back_out_mat(j, i) = (in_mat(j, i) > 0) ? in_mat(j, i) : 0;
+        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.rows(); i++) {
+            for (int j = 0; j < in_mat.cols(); j++) {
+                out_mat(i, j) = (in_mat(i, j) > 0) ? in_mat(i, j) : 0.;
             }
         }
+        return out_mat;
     }
-    void backward(const Eigen::MatrixXd& in_mat) override
-    {
-        m_back_in_mat = in_mat;
 
-        m_back_out_mat.resize(in_mat.rows(), in_mat.cols());
-        for (int i = 0; i < in_mat.cols(); i++) {
-            for (int j = 0; j < in_mat.rows(); j++) {
-                m_back_out_mat(j, i) = (in_mat(j, i) > 0) ? in_mat(j, i) : 0;
+    Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
+    {
+        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.rows(); i++) {
+            for (int j = 0; j < in_mat.cols(); j++) {
+                out_mat(i, j) = (in_mat(i, j) > 0) ? 1. : 0.;
             }
         }
+        return out_mat;
     }
+
+private:
 };
-*/
 
 }  // namespace of MachineLearning
