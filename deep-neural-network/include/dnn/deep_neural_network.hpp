@@ -44,7 +44,7 @@ public:
         // forward
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
+            Eigen::MatrixXd tmp_mat = std::move(m_layers.at(i)->forward(next_in_mat, true));
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
@@ -59,7 +59,7 @@ public:
         next_in_mat = tmp_mat;
 
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
+            Eigen::MatrixXd tmp_mat = std::move(m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat));
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }

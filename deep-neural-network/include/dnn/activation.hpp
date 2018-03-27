@@ -47,6 +47,7 @@ private:
 /*
  * @brief   Softmax
  */
+/*
 class Softmax : public AbstLayer
 {
 public:
@@ -94,25 +95,26 @@ public:
     Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         return in_mat;
-        /*
-        Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
-        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
-        for (int i = 0; i < in_mat.cols(); i++) {
-            for (int j = 0; j < in_mat.rows(); j++) {
-                sum_vec(i) += in_mat(j, i) * in_mat(j, i);
-            }
-        }
 
-        for (int i = 0; i < in_mat.cols(); i++) {
-            for (int j = 0; j < in_mat.rows(); j++) {
-                out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));
-            }
-        }
-        */
+
+        //Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
+        //Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
+        //for (int i = 0; i < in_mat.cols(); i++) {
+        //    for (int j = 0; j < in_mat.rows(); j++) {
+        //        sum_vec(i) += in_mat(j, i) * in_mat(j, i);
+        //    }
+        //}
+
+        //for (int i = 0; i < in_mat.cols(); i++) {
+        //    for (int j = 0; j < in_mat.rows(); j++) {
+        //        out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));
+        //    }
+        //}
     }
 
 private:
 };
+    */
 
 /*
 class Sigmoid : public AbstLayer
@@ -145,7 +147,6 @@ private:
     }
 };
 
-*/
 class Relu : public AbstLayer
 {
 public:
@@ -178,5 +179,6 @@ public:
 
 private:
 };
+*/
 
 }  // namespace of MachineLearning
