@@ -11,10 +11,21 @@
 namespace MachineLearning
 {
 
+/*!
+ * @brief   class of DeepNeuralNetwork
+ */
 class DeepNeuralNetwork
 {
 public:
+    /*!
+     * @brief   constructor
+     */
     explicit DeepNeuralNetwork() {}
+
+    /*!
+     * @brief   add new layer
+     * @param   layer     new layer added
+     */
     void add(std::unique_ptr<AbstLayer>&& layer)
     {
         if (not m_layers.empty()) {            // This layer is not input layer
@@ -39,6 +50,11 @@ public:
         };
     }
 
+    /*!
+     * @brief   fit
+     * @param   in_mat     input matrix of train_data
+     * @param   ans_mat    answer matrix of train_data
+     */
     void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
     {
         // forward
@@ -65,6 +81,10 @@ public:
         }
     }
 
+    /*!
+     * @brief   predict
+     * @param   in_mat     input matrix to predict
+     */
     Eigen::MatrixXd predict(const Eigen::MatrixXd& in_mat)
     {
         Eigen::MatrixXd next_in_mat = in_mat;
@@ -79,8 +99,8 @@ public:
     //void compile(std::function<> loss, std::unique_ptr<Optimizer> optimizer) {}
 
 private:
-    std::vector<std::unique_ptr<AbstLayer>> m_layers;
-    std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> d_loss_func;
+    std::vector<std::unique_ptr<AbstLayer>> m_layers;                              //!< layers
+    std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> d_loss_func;  //!< derivation of loss function
 };
 
 }  // namespace of MachineLearning
