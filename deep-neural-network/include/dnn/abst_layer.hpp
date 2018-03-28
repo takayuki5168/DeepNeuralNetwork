@@ -43,9 +43,9 @@ public:
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& /*in_mat*/, bool /*train_flag*/) = 0;
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& /*in_mat*/) = 0;
 
-    Eigen::MatrixXd gradDescent(const Eigen::MatrixXd& mat, const Eigen::MatrixXd& d_mat) const
+    virtual void gradDescent()
     {
-        return mat - 0.1 * d_mat;
+        m_weight_mat = m_weight_mat - 0.1 * m_d_weight_mat;
     }
 
     void setInNum(int in_num)
