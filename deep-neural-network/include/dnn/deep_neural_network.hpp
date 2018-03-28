@@ -7,8 +7,9 @@
 #include <memory>
 #include <functional>
 #include "dnn/abst_layer.hpp"
+#include "dnn/loss.hpp"
 
-#define DEBUG_MESSAGE
+//#define DEBUG_MESSAGE
 
 namespace MachineLearning
 {
@@ -47,7 +48,7 @@ public:
         layer->initNetwork();
         m_layers.push_back(std::move(layer));
 
-        d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) {
+        m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) {
             return (in_mat - ans_mat);
         };
     }
@@ -59,16 +60,23 @@ public:
      */
     void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
     {
+      std::cout << "[Fit]" << std::endl;
+      
         // forward
         Eigen::MatrixXd next_in_mat = in_mat;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            Eigen::MatrixXd tmp_mat = std::move(m_layers.at(i)->forward(next_in_mat, true));
+	  //std::cout << i << " " << next_in_mat << std::endl;
+            Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
 
+	double error = m_loss_func(next_in_mat, ans_mat);
+	std::cout << "[Fit] error " << error << std::endl;
+
+	
         // backward
-        Eigen::MatrixXd tmp_mat = d_loss_func(next_in_mat, ans_mat);
+        Eigen::MatrixXd tmp_mat = m_d_loss_func(next_in_mat, ans_mat);
 	
 #ifdef DEBUG_MESSAGE	
         std::cout << "[Backward]" << std::endl;
@@ -80,7 +88,7 @@ public:
         next_in_mat = tmp_mat;
 
         for (unsigned int i = 0; i < m_layers.size(); i++) {
-            Eigen::MatrixXd tmp_mat = std::move(m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat));
+            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
@@ -93,7 +101,9 @@ public:
     Eigen::MatrixXd predict(const Eigen::MatrixXd& in_mat)
     {
         Eigen::MatrixXd next_in_mat = in_mat;
+	//std::cout << "[Predict]" << std::endl;
         for (unsigned int i = 0; i < m_layers.size(); i++) {
+	  //std::cout << next_in_mat << std::endl;
             Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, false);
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
@@ -101,11 +111,16 @@ public:
         return next_in_mat;
     }
 
-    //void compile(std::function<> loss, std::unique_ptr<Optimizer> optimizer) {}
+  void compile(std::unique_ptr<AbstLoss> loss/*, std::unique_ptr<Optimizer> optimizer = nullptr*/)
+  {
+      m_loss_func = loss->getLossFunc();
+      m_d_loss_func = loss->getDLossFunc();
+  }
 
 private:
     std::vector<std::unique_ptr<AbstLayer>> m_layers;                              //!< layers
-    std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> d_loss_func;  //!< derivation of loss function
+    std::function<double(Eigen::MatrixXd, Eigen::MatrixXd)> m_loss_func;  //!< loss function  
+    std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> m_d_loss_func;  //!< derivation of loss function
 };
 
 }  // namespace of MachineLearning

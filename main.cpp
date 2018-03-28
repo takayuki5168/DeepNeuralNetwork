@@ -3,6 +3,7 @@
 #include "dnn/dense.hpp"
 #include "dnn/dropout.hpp"
 #include "dnn/activation.hpp"
+#include "dnn/loss.hpp"
 
 int main()
 {
@@ -12,12 +13,12 @@ int main()
     train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
 
     Eigen::MatrixXd ans_mat(4, 1);
-    ans_mat << 1, 0, 0, 0;
+    ans_mat << 0, 0, 0, 1;
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(3, 2));
     //dnn->add(std::make_unique<Relu>());
-    dnn->add(std::make_unique<Dense>(10));
+    //dnn->add(std::make_unique<Dense>(10));
     //dnn->add(std::make_unique<Relu>());
     dnn->add(std::make_unique<Dense>(1));
     // TODO 出力数が1のものにsoftmaxはつかっては行けない
@@ -28,7 +29,7 @@ int main()
     //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
-    //dnn->compile(Crossentropy(), Adam());
+    dnn->compile(std::make_unique<RMS>());
 
     for (int i = 0; i < 1000; i++) {
         dnn->fit(train_mat, ans_mat);
