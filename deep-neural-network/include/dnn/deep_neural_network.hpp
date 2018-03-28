@@ -8,6 +8,8 @@
 #include <functional>
 #include "dnn/abst_layer.hpp"
 
+#ifdef DEBUG_MESSAGE
+
 namespace MachineLearning
 {
 
@@ -67,11 +69,14 @@ public:
 
         // backward
         Eigen::MatrixXd tmp_mat = d_loss_func(next_in_mat, ans_mat);
+	
+#ifdef DEBUG_MESSAGE	
         std::cout << "[Backward]" << std::endl;
         std::cout << next_in_mat << std::endl;
         std::cout << ans_mat << std::endl;
-
-        next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+#endif
+	
+	next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
         next_in_mat = tmp_mat;
 
         for (unsigned int i = 0; i < m_layers.size(); i++) {

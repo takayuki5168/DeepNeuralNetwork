@@ -33,6 +33,7 @@ int main()
     for (int i = 0; i < 1000; i++) {
         dnn->fit(train_mat, ans_mat);
     }
+    
     Eigen::MatrixXd out_mat = dnn->predict(train_mat);
     std::cout << "==input==" << std::endl;
     std::cout << train_mat << std::endl;
