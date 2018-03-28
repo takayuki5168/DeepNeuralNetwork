@@ -146,13 +146,13 @@ private:
         }
     }
 };
-
+*/
 class Relu : public AbstLayer
 {
 public:
     explicit Relu() : AbstLayer() {}
 
-    Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
     {
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
@@ -166,7 +166,7 @@ public:
         return out_mat;
     }
 
-    Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
+    virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
@@ -179,6 +179,6 @@ public:
 
 private:
 };
-*/
+
 
 }  // namespace of MachineLearning

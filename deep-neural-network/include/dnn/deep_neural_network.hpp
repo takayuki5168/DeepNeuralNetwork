@@ -8,7 +8,7 @@
 #include <functional>
 #include "dnn/abst_layer.hpp"
 
-#ifdef DEBUG_MESSAGE
+#define DEBUG_MESSAGE
 
 namespace MachineLearning
 {
