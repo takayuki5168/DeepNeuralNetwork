@@ -50,8 +50,6 @@ public:
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         // init X
-      //std::cout << "[Dense] Forward" << std::endl;
-
         m_in_mat.resize(in_mat.rows(), in_mat.cols() + 1);
         m_in_mat = Eigen::MatrixXd::Ones(in_mat.rows(), in_mat.cols() + 1);
         m_in_mat.block(0, 1, in_mat.rows(), in_mat.cols()) = in_mat;

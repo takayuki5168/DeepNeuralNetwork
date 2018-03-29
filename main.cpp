@@ -27,8 +27,6 @@ int main()
     // TODO 出力数が1のものにsoftmaxはつかっては行けない
 
     //dnn->add(std::make_unique<Dropout>(0.1));
-    //dnn->add(std::make_unique<Dense>(10));
-    //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
     dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());

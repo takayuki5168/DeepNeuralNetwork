@@ -50,7 +50,7 @@ public:
     explicit MeanAbsoluteError ()
       : AbstLoss()
     {
-        m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) { return in_mat - ans_mat; };
+      m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) { return in_mat - ans_mat; };
         m_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
 	{
 	    double error = 0.;
