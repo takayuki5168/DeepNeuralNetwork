@@ -13,11 +13,12 @@ int main()
     train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
 
     Eigen::MatrixXd ans_mat(4, 1);
-    ans_mat << 0, 0, 0, 1;
+    ans_mat << 1, 0, 0, 1;
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(3, 2));
     dnn->add(std::make_unique<Relu>());
+    //dnn->add(std::make_unique<Sigmoid>());    
     //dnn->add(std::make_unique<Dense>(10));
     //dnn->add(std::make_unique<Relu>());
     dnn->add(std::make_unique<Dense>(1));
