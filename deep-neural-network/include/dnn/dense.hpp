@@ -58,9 +58,6 @@ public:
 
         // Y = XW
         Eigen::MatrixXd out_mat = m_in_mat * m_weight_mat;
-	//std::cout << in_mat << std::endl;
-	//std::cout << m_weight_mat << std::endl;
-	//std::cout << out_mat << std::endl;
 
 #ifdef DEBUG_MESSAGE
         std::cout << "[Forward]" << std::endl;
@@ -77,12 +74,7 @@ public:
 
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
-      //std::cout << "[Backward] Dense" << std::endl;
-      //std::cout << m_in_mat << std::endl;
-      //std::cout << in_mat << std::endl;
         m_d_weight_mat = m_in_mat.transpose() * in_mat;
-        gradDescent();
-
         return (in_mat * m_weight_mat.transpose()).block(0, 1, m_in_mat.rows(), m_in_mat.cols() - 1);
     }
 

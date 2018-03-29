@@ -8,6 +8,7 @@
 #include <functional>
 #include "dnn/abst_layer.hpp"
 #include "dnn/loss.hpp"
+#include "dnn/optimizer.hpp"
 
 //#define DEBUG_MESSAGE
 
@@ -89,6 +90,8 @@ public:
 
         for (unsigned int i = 0; i < m_layers.size(); i++) {
             Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
+	    m_opt_func(m_layers.at(m_layers.size() - i - 1));
+	    
             next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
             next_in_mat = tmp_mat;
         }
@@ -111,16 +114,18 @@ public:
         return next_in_mat;
     }
 
-  void compile(std::unique_ptr<AbstLoss> loss/*, std::unique_ptr<Optimizer> optimizer = nullptr*/)
+  void compile(std::unique_ptr<AbstLoss> loss, std::unique_ptr<AbstOptimizer> optimizer)
   {
       m_loss_func = loss->getLossFunc();
       m_d_loss_func = loss->getDLossFunc();
+      m_opt_func = optimizer->getOptFunc();
   }
 
 private:
     std::vector<std::unique_ptr<AbstLayer>> m_layers;                              //!< layers
     std::function<double(Eigen::MatrixXd, Eigen::MatrixXd)> m_loss_func;  //!< loss function  
     std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> m_d_loss_func;  //!< derivation of loss function
+  std::function<void(std::unique_ptr<AbstLayer>&)> m_opt_func;
 };
 
 }  // namespace of MachineLearning

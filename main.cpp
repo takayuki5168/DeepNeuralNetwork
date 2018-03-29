@@ -4,7 +4,7 @@
 #include "dnn/dropout.hpp"
 #include "dnn/activation.hpp"
 #include "dnn/loss.hpp"
-//#include "dnn/optimizer.hpp"
+#include "dnn/optimizer.hpp"
 
 int main()
 {
@@ -31,7 +31,7 @@ int main()
     //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
-    dnn->compile(std::make_unique<MeanSquaredError>());
+    dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());
 
     for (int i = 0; i < 10000; i++) {
         dnn->fit(train_mat, ans_mat);

@@ -43,15 +43,6 @@ public:
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& /*in_mat*/, bool /*train_flag*/) = 0;
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& /*in_mat*/) = 0;
 
-    virtual void gradDescent()
-    {
-      //std::cout << "[GradDescent]" << std::endl;
-       //std::cout << m_weight_mat << std::endl;
-       //std::cout << m_d_weight_mat << std::endl;
-        m_weight_mat = m_weight_mat - 0.1 * m_d_weight_mat;
-	//std::cout << m_weight_mat << std::endl;	
-    }
-
     void setInNum(int in_num)
     {
         DYNAMIC_ASSERT(in_num > 0, "InNum should be more than zero.");
@@ -67,6 +58,10 @@ public:
 
     int getInNum() const { return m_in_num; }
     int getNeuronNum() const { return m_neuron_num; }
+  
+    Eigen::MatrixXd getWeight() const { return m_weight_mat; }
+    Eigen::MatrixXd getDWeight() const { return m_d_weight_mat; }
+    void setWeight(Eigen::MatrixXd weight_mat) { m_weight_mat = weight_mat;}
 
 protected:
     int m_neuron_num = 0;  //!< number of neuron
