@@ -38,7 +38,7 @@ public:
         mt.seed(rand());
         for (int i = 0; i < m_weight_mat.rows(); i++) {
             for (int j = 0; j < m_weight_mat.cols(); j++) {
-                m_weight_mat(i, j) = (mt() % 1000 - 500.0) / 5000;
+	      m_weight_mat(i, j) = (static_cast<double>(mt() % 1000) - 500) / 5000;
             }
         }
 #ifdef DEBUG_MESSAGE	

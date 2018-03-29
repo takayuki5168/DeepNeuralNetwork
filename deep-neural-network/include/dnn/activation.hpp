@@ -1,6 +1,6 @@
 /*
  * @file    activation.hpp
- * @brief   Activationクラス群
+ * @brief   classes of Activation
  */
 #pragma once
 
@@ -9,51 +9,16 @@
 
 namespace MachineLearning
 {
-/*
-class Identify : public AbstLayer
-{
-public:
-    explicit Identify() : AbstLayer() {}
-
-    Eigen::MatrixXd forward(Eigen::MatrixXd in_mat) override { return in_mat; }
-    Eigen::MatrixXd backward(Eigen::MatrixXd in_mat) override { return in_mat; }
-
-private:
-};
-
-class Step : public AbstLayer
-{
-public:
-    explicit Step() : AbstLayer() {}
-
-    Eigen::MatrixXd forward(Eigen::MatrixXd in_mat) override
-    {
-        Eigen::MatrixXd out_mat;
-        for (int i = 0; i < in_mat.size(); i++) {
-            out_mat(i) = (in_mat(i) > 0) ? 1 : 0;
-        }
-        return out_mat;
-    }
-    // TODO
-    Eigen::MatrixXd backward(Eigen::MatrixXd in_mat) override
-    {
-        return in_mat;
-    }
-
-private:
-};
-*/
-
-/*
- * @brief   Softmax
+/*!
+ * @class   Softmax
+ * @brief   class of Softmax Activation
  */
-/*
 class Softmax : public AbstLayer
 {
 public:
     explicit Softmax() : AbstLayer() {}
 
-    Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
+  virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         std::cout << "[Softmax] forward" << std::endl;
         std::cout << in_mat << std::endl;
@@ -92,37 +57,45 @@ public:
         return exp_mat;
     }
 
-    Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
+    virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
-        return in_mat;
+        Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
+        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
+        for (int i = 0; i < in_mat.cols(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                sum_vec(i) += in_mat(j, i) * in_mat(j, i);
+            }
+        }
 
-
-        //Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
-        //Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
-        //for (int i = 0; i < in_mat.cols(); i++) {
-        //    for (int j = 0; j < in_mat.rows(); j++) {
-        //        sum_vec(i) += in_mat(j, i) * in_mat(j, i);
-        //    }
-        //}
-
-        //for (int i = 0; i < in_mat.cols(); i++) {
-        //    for (int j = 0; j < in_mat.rows(); j++) {
-        //        out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));
-        //    }
-        //}
+        for (int i = 0; i < in_mat.cols(); i++) {
+            for (int j = 0; j < in_mat.rows(); j++) {
+                out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));
+            }
+        }
+	return out_mat;
     }
 
 private:
 };
-    */
 
-
+/*!
+ * @class   Sigmoid
+ * @brief   class of Sigmoid Activation
+ */
 class Sigmoid : public AbstLayer
 {
 public:
+    /*!
+     * constructor
+     */
     explicit Sigmoid() : AbstLayer() {}
 
-    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
+    /*!
+     * forward propagation
+     * @param in_mat       input matrix of forward propagation
+     * @param train_flag   if this propagation is used to train or not
+     */
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
@@ -130,36 +103,53 @@ public:
 	Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
             for (int j = 0; j < in_mat.cols(); j++) {
-	        out_mat(i, j) = 1.0 / (1.0 + std::exp(-in_mat(i, j)));
+	      out_mat(i, j) = 1. / (1. + std::exp(-in_mat(i, j)));
             }
         }
 	return out_mat;
     }
+  
+    /*!
+     * back propagation
+     * @param in_mat   input matrix of back propagation
+     * @return out_mat   output matrix of back propagation
+     */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
             for (int j = 0; j < in_mat.cols(); j++) {
-		out_mat(i, j) = in_mat(i, j) * m_in_mat(i, j) * (1.0 - m_in_mat(i, j));
+	      double sigmoid_val = 1. / (1. + std::exp(-m_in_mat(i, j)));
+		out_mat(i, j) = in_mat(i, j) * sigmoid_val * (1. - sigmoid_val);
             }
         }
 	return out_mat;
     }
+  
 private:  
 };
 
-class Relu : public AbstLayer
+/*!
+ * @class   ReLU
+ * @brief   class of ReLU Activation
+ */
+class ReLU : public AbstLayer
 {
 public:
-    explicit Relu() : AbstLayer() {}
-
-    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
+    /*!
+     * constructor
+     */
+    explicit ReLU() : AbstLayer() {}
+  
+    /*!
+     * forward propagation
+     * @param in_mat       input matrix of forward propagation
+     * @param train_flag   if this propagation is used to train or not
+     */
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
-	//std::cout << "[Relu] Forward" << std::endl;
-	//std::cout << in_mat << std::endl;
-	//std::cout << m_in_mat << std::endl;
 
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
@@ -170,6 +160,11 @@ public:
         return out_mat;
     }
 
+    /*!
+     * back propagation
+     * @param in_mat   input matrix of back propagation
+     * @return out_mat   output matrix of back propagation
+     */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
@@ -184,5 +179,4 @@ public:
 private:
 };
 
-
-}  // namespace of MachineLearning
+}  // namespace MachineLearning
