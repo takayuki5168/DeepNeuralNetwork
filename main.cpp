@@ -15,6 +15,7 @@ int main()
     Eigen::MatrixXd ans_mat(4, 1);
     ans_mat << 1, 0, 0, 1;
 
+    // TODO Sigmoid Dropout LSTM Softmax
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(10, 2));
     dnn->add(std::make_unique<ReLU>());
@@ -29,6 +30,8 @@ int main()
     //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
+    // TODO MeanAbsoluteError Crossentropy Hinge BinaryCrossentropy CategoricalCrossentropy
+    // TODO Adam Adagram RMSprop
     dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());
 
     for (int i = 0; i < 3000; i++) {
