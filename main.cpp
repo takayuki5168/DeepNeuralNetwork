@@ -33,7 +33,7 @@ int main()
 
     dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());
 
-    for (int i = 0; i < 10000; i++) {
+    for (int i = 0; i < 3000; i++) {
         dnn->fit(train_mat, ans_mat);
     }
     

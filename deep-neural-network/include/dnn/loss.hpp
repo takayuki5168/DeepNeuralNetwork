@@ -29,8 +29,8 @@ public:
       : AbstLoss()
     {
       //TODO
-        m_d_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat) { return in_mat - ans_mat; };
-        m_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat)
+        m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) { return in_mat - ans_mat; };
+        m_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
 	{
 	    double error = 0.;
 	    for (int i = 0; i < in_mat.rows(); i++) {
@@ -50,8 +50,8 @@ public:
     explicit MeanAbsoluteError ()
       : AbstLoss()
     {
-        m_d_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat) { return in_mat - ans_mat; };
-        m_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat)
+        m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) { return in_mat - ans_mat; };
+        m_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
 	{
 	    double error = 0.;
 	    for (int i = 0; i < in_mat.rows(); i++) {
@@ -71,8 +71,8 @@ public:
     explicit CrossEntropy ()
       : AbstLoss()
     {
-        m_d_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat) { return in_mat - ans_mat; };
-        m_loss_func = [](Eigen::MatrixXd in_mat, Eigen::MatrixXd ans_mat)
+        m_d_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat) { return in_mat - ans_mat; };
+        m_loss_func = [](const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
 	{
 	    double error = 0.;
 	    for (int i = 0; i < in_mat.rows(); i++) {
