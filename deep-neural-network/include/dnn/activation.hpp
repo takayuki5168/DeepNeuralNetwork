@@ -156,9 +156,9 @@ public:
     {
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
-	std::cout << "[Relu] Forward" << std::endl;
-	std::cout << in_mat << std::endl;
-	std::cout << m_in_mat << std::endl;
+	//std::cout << "[Relu] Forward" << std::endl;
+	//std::cout << in_mat << std::endl;
+	//std::cout << m_in_mat << std::endl;
 
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {

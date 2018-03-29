@@ -17,7 +17,7 @@ int main()
 
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
     dnn->add(std::make_unique<Dense>(3, 2));
-    //dnn->add(std::make_unique<Relu>());
+    dnn->add(std::make_unique<Relu>());
     //dnn->add(std::make_unique<Dense>(10));
     //dnn->add(std::make_unique<Relu>());
     dnn->add(std::make_unique<Dense>(1));

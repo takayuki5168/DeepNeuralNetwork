@@ -45,7 +45,7 @@ public:
 
     virtual void gradDescent()
     {
-       std::cout << "[GradDescent]" << std::endl;
+      //std::cout << "[GradDescent]" << std::endl;
        //std::cout << m_weight_mat << std::endl;
        //std::cout << m_d_weight_mat << std::endl;
         m_weight_mat = m_weight_mat - 0.1 * m_d_weight_mat;

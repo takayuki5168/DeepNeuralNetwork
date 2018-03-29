@@ -50,7 +50,7 @@ public:
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         // init X
-      std::cout << "[Dense] Forward" << std::endl;
+      //std::cout << "[Dense] Forward" << std::endl;
 
         m_in_mat.resize(in_mat.rows(), in_mat.cols() + 1);
         m_in_mat = Eigen::MatrixXd::Ones(in_mat.rows(), in_mat.cols() + 1);
@@ -77,7 +77,7 @@ public:
 
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
-      std::cout << "[Backward] Dense" << std::endl;
+      //std::cout << "[Backward] Dense" << std::endl;
       //std::cout << m_in_mat << std::endl;
       //std::cout << in_mat << std::endl;
         m_d_weight_mat = m_in_mat.transpose() * in_mat;
