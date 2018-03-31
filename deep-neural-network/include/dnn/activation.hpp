@@ -17,10 +17,10 @@ class Softmax : public AbstLayer
 public:
     explicit Softmax() : AbstLayer() {}
 
-  virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
-      //std::cout << "[Softmax] forward" << std::endl;
-      //std::cout << in_mat << std::endl;
+        //std::cout << "[Softmax] forward" << std::endl;
+        //std::cout << in_mat << std::endl;
 
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
@@ -63,14 +63,14 @@ public:
                 sum_vec(i) += m_in_mat(j, i) * in_mat(j, i);
             }
         }
-	
+
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.cols(); i++) {
             for (int j = 0; j < in_mat.rows(); j++) {
                 out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));
             }
         }
-	return out_mat;
+        return out_mat;
     }
 
 private:
@@ -98,15 +98,15 @@ public:
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
 
-	Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
+        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
             for (int j = 0; j < in_mat.cols(); j++) {
-	      out_mat(i, j) = 1. / (1. + std::exp(-in_mat(i, j)));
+                out_mat(i, j) = 1. / (1. + std::exp(-in_mat(i, j)));
             }
         }
-	return out_mat;
+        return out_mat;
     }
-  
+
     /*!
      * back propagation
      * @param in_mat   input matrix of back propagation
@@ -117,14 +117,14 @@ public:
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
             for (int j = 0; j < in_mat.cols(); j++) {
-	      double sigmoid_val = 1. / (1. + std::exp(-m_in_mat(i, j)));
-		out_mat(i, j) = in_mat(i, j) * sigmoid_val * (1. - sigmoid_val);
+                double sigmoid_val = 1. / (1. + std::exp(-m_in_mat(i, j)));
+                out_mat(i, j) = in_mat(i, j) * sigmoid_val * (1. - sigmoid_val);
             }
         }
-	return out_mat;
+        return out_mat;
     }
-  
-private:  
+
+private:
 };
 
 /*!
@@ -138,7 +138,7 @@ public:
      * constructor
      */
     explicit ReLU() : AbstLayer() {}
-  
+
     /*!
      * forward propagation
      * @param in_mat       input matrix of forward propagation
@@ -168,7 +168,7 @@ public:
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.rows(); i++) {
             for (int j = 0; j < in_mat.cols(); j++) {
-  	        out_mat(i, j) = (m_in_mat(i, j) > 0) ? in_mat(i, j) : 0.;
+                out_mat(i, j) = (m_in_mat(i, j) > 0) ? in_mat(i, j) : 0.;
             }
         }
         return out_mat;

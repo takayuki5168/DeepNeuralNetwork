@@ -13,12 +13,9 @@ int main()
   Eigen::MatrixXd train_mat(4, 2);
   train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
   
-  //Eigen::MatrixXd ans_mat(4, 2);
-  //ans_mat << 1, 0, 0, 1, 0, 1, 1, 0;
   Eigen::MatrixXd ans_mat(4, 4);
   ans_mat << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
-  // TODO Softmax RNN LSTM Conv1D Conv2D Conv3D MaxPooling1D MaxPooling2D MaxPooling3D
   auto dnn = initDeepNeuralNetwork();
   dnn->add<Dense>(10, 2);
   dnn->add<ReLU>();
@@ -27,24 +24,11 @@ int main()
   dnn->add<Dense>(10);
   dnn->add<ReLU>();
   dnn->add<Dense>(4);
-  //dnn->add<Softmax>();
-  //dnn->add<LSTM>(128);
 
-  // TODO CrossEntropy BinaryCrossentropy CategoricalCrossentropy
-  //dnn->loss<MeanSquaredError>();
-  dnn->loss<MeanAbsoluteError>();
-  //dnn->loss<CrossEntropy>();  
-  
+  dnn->loss<MeanSquaredError>();
   dnn->opt<RMSprop>();
-
+  
   dnn->fit(train_mat, ans_mat, 1000);
-
-  std::cout << std::endl;
-  Eigen::MatrixXd out_mat = dnn->predict(train_mat);
-  std::cout << "==input==" << std::endl;
-  std::cout << train_mat << std::endl;
-  std::cout << "==output==" << std::endl;
-  std::cout << out_mat << std::endl;
 
   return 0;
 }
