@@ -20,8 +20,8 @@ public:
 
   virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
-        std::cout << "[Softmax] forward" << std::endl;
-        std::cout << in_mat << std::endl;
+      //std::cout << "[Softmax] forward" << std::endl;
+      //std::cout << in_mat << std::endl;
 
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
@@ -29,12 +29,11 @@ public:
         // calc max vector of each column of in_mat
         Eigen::VectorXd max_vec = in_mat.block(0, 0, in_mat.rows(), 1);
         for (int i = 0; i < in_mat.cols(); i++) {
-            // CHECK
             for (int j = 0; j < in_mat.rows(); j++) {
                 max_vec(i) = (max_vec(i) > in_mat(j, i)) ? max_vec(i) : in_mat(j, i);
             }
         }
-        std::cout << max_vec << std::endl;
+        //std::cout << max_vec << std::endl;
 
         // calc exponential mat
         Eigen::MatrixXd exp_mat;
@@ -53,20 +52,20 @@ public:
                 exp_mat(j, i) = exp_mat(j, i) / sum_val;
             }
         }
-        std::cout << exp_mat << std::endl;
+        //std::cout << exp_mat << std::endl;
         return exp_mat;
     }
 
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
-        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.cols(); i++) {
             for (int j = 0; j < in_mat.rows(); j++) {
-                sum_vec(i) += in_mat(j, i) * in_mat(j, i);
+                sum_vec(i) += m_in_mat(j, i) * in_mat(j, i);
             }
         }
-
+	
+        Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());
         for (int i = 0; i < in_mat.cols(); i++) {
             for (int j = 0; j < in_mat.rows(); j++) {
                 out_mat(j, i) = m_in_mat(j, i) * (in_mat(j, i) - sum_vec(i));

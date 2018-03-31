@@ -6,6 +6,8 @@
 
 #include <memory>
 #include <functional>
+#include <random>
+#include <chrono>
 #include "dnn/abst_layer.hpp"
 #include "dnn/loss.hpp"
 #include "dnn/optimizer.hpp"
@@ -59,41 +61,79 @@ public:
      * @param   in_mat     input matrix of train_data
      * @param   ans_mat    answer matrix of train_data
      */
-    void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat)
+  void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat, int epoch = 1000000, int batch_size = 4)
     {
-      std::cout << "[Fit]" << std::endl;
-      
-        // forward
-        Eigen::MatrixXd next_in_mat = in_mat;
-        for (unsigned int i = 0; i < m_layers.size(); i++) {
-	  //std::cout << i << " " << next_in_mat << std::endl;
-            Eigen::MatrixXd tmp_mat = m_layers.at(i)->forward(next_in_mat, true);
-            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
-            next_in_mat = tmp_mat;
-        }
-
-	double error = m_loss_func(next_in_mat, ans_mat);
-	std::cout << "[Fit] error " << error << std::endl;
-
-	
-        // backward
-        Eigen::MatrixXd tmp_mat = m_d_loss_func(next_in_mat, ans_mat);
-	
+        setbuf(stdout, NULL);
+	Eigen::MatrixXd batch_in_mat(batch_size, in_mat.cols());
+	Eigen::MatrixXd batch_ans_mat(batch_size, ans_mat.cols());	
+        for (int i = 0; i < epoch; i++) {
+	    auto start_time = std::chrono::system_clock::now();
+            std::cout << "Epoch " << i + 1 << "/" << epoch << std::endl;
+            int loop_num = 60000;//std::max(static_cast<int>(static_cast<double>(in_mat.rows()) / batch_size), 1);
+	    for (int j = 0; j < loop_num; j++){
+	        for (int k = 0; k < batch_size; k++) {
+                    mt.seed(rnd());
+	      	    int row = static_cast<int>(mt()) % static_cast<int>(in_mat.rows());
+	      	    row = row > 0 ? row : -row;
+	      	    //std::cout << row << std::endl;
+  	            batch_in_mat.row(k) = in_mat.row(row);
+	      	    batch_ans_mat.row(k) = ans_mat.row(row);
+               }
+	        //std::cout << batch_in_mat << std::endl;
+	      	//std::cout << batch_ans_mat << std::endl;
+	        	    
+      	      
+               // forward
+                Eigen::MatrixXd next_in_mat = batch_in_mat;
+                for (unsigned int k = 0; k < m_layers.size(); k++) {
+   	          //std::cout << i << " " << next_in_mat << std::endl;
+                   Eigen::MatrixXd tmp_mat = m_layers.at(k)->forward(next_in_mat, true);
+                   next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+                   next_in_mat = tmp_mat;
+                }
+	        
+	        double loss = m_loss_func(next_in_mat, batch_ans_mat);
+	        
+	        
+                // backward
+                Eigen::MatrixXd tmp_mat = m_d_loss_func(next_in_mat, batch_ans_mat);
+	        
 #ifdef DEBUG_MESSAGE	
-        std::cout << "[Backward]" << std::endl;
-        std::cout << next_in_mat << std::endl;
-        std::cout << ans_mat << std::endl;
-#endif
-	
-	next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
-        next_in_mat = tmp_mat;
-
-        for (unsigned int i = 0; i < m_layers.size(); i++) {
-            Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - i - 1)->backward(next_in_mat);
-	    m_opt_func(m_layers.at(m_layers.size() - i - 1));
-	    
-            next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
-            next_in_mat = tmp_mat;
+                std::cout << "[Backward]" << std::endl;
+                std::cout << next_in_mat << std::endl;
+                std::cout << batch_ans_mat << std::endl;
+#endif	        
+	        
+	        next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+                next_in_mat = tmp_mat;
+	        
+                for (unsigned int k = 0; k < m_layers.size(); k++) {
+                    Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - k - 1)->backward(next_in_mat);
+	            m_opt_func(m_layers.at(m_layers.size() - k - 1));
+	            
+                    next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
+                    next_in_mat = tmp_mat;
+               }
+	       auto end_time = std::chrono::system_clock::now();
+	       double elapsed = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count()) / 1000;
+	       
+	       printf("\r");
+	       //std::cout << j << "/" << loop_num << " [";
+	       printf("%d/%d [", j, loop_num);
+	       	       int width = 15;
+	       for (int k = 0; k < width; k++) {
+		 if (k < static_cast<double>(width) * j / loop_num) {
+		   printf("=");
+		 }else{
+		   printf(" ");
+		 }
+	       }
+	 
+               //std::cout << "] " << elapsed << "s loss: " << loss;// << std::endl;
+	       printf("] %2.3lfs  loss: %3.3lf", elapsed, loss);
+	    }
+	    std::cout << std::endl;
+	   
         }
     }
 
@@ -126,6 +166,10 @@ private:
     std::function<double(Eigen::MatrixXd, Eigen::MatrixXd)> m_loss_func;  //!< loss function  
     std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> m_d_loss_func;  //!< derivation of loss function
   std::function<void(std::unique_ptr<AbstLayer>&)> m_opt_func;
+
+    std::random_device rnd;
+    std::mt19937 mt;
+
 };
 
 }  // namespace of MachineLearning

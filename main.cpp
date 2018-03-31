@@ -12,8 +12,8 @@ int main()
 
     Eigen::MatrixXd train_mat(4, 2);
     train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
-    Eigen::MatrixXd ans_mat(4, 1);
-    ans_mat << 1, 0, 0, 1;
+    Eigen::MatrixXd ans_mat(4, 2);
+    ans_mat << 1, 0, 0, 1, 0, 1, 1, 0;
 
     // TODO Sigmoid Dropout LSTM Softmax
     std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
@@ -23,10 +23,11 @@ int main()
     dnn->add(std::make_unique<ReLU>());
     dnn->add(std::make_unique<Dense>(5));
     dnn->add(std::make_unique<ReLU>());
-    //dnn->add(std::make_unique<Sigmoid>());    
-    dnn->add(std::make_unique<Dense>(1));
+    dnn->add(std::make_unique<Dense>(2));
+    //dnn->add(std::make_unique<Softmax>());        
     // TODO 出力数が1のものにsoftmaxはつかっては行けない
 
+    //dnn->add(std::make_unique<Sigmoid>());    
     //dnn->add(std::make_unique<Dropout>(0.1));
     //dnn->add(std::make_unique<LSTM>(128));
 
@@ -34,9 +35,7 @@ int main()
     // TODO Adam Adagram RMSprop
     dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());
 
-    for (int i = 0; i < 3000; i++) {
-        dnn->fit(train_mat, ans_mat);
-    }
+    dnn->fit(train_mat, ans_mat);
     
     Eigen::MatrixXd out_mat = dnn->predict(train_mat);
     std::cout << "==input==" << std::endl;
