@@ -7,27 +7,35 @@
 #include <random>
 #include "dnn/abst_layer.hpp"
 
-//#define DEBUG_MESSAGE
-
 namespace MachineLearning
 {
 
+/*!
+ * @class   Dense
+ * @brief   class of Dense Layer
+ */
 class Dense : public AbstLayer
 {
 public:
     /*!
-     * @brief   constructor
-     *          for except the first layer
+     * constructor
+     * @param neuron_num   number of neuron of this layer
+     * @note   for except the first layer
      */
     explicit Dense(int neuron_num)
         : AbstLayer(neuron_num) {}
     /*!
-     * @brief   constructor
-     *          for the first layer
+     * constructor
+     * @param neuron_num   number of neuron of this layer
+     * @param in_num       number of input of this layer
+     * @note   for the first layer
      */
     explicit Dense(int neuron_num, int in_num)
         : AbstLayer(neuron_num, in_num) {}
 
+    /*!
+     * resize weight and d_weight matrix 
+     */
     virtual void initNetwork() override
     {
         m_weight_mat.resize(m_in_num + 1, m_neuron_num);
@@ -47,6 +55,10 @@ public:
 #endif
     }
 
+    /*!
+     * forward propagation
+     * @param in_mat   input matrix
+     */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
         // init X

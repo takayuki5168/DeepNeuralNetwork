@@ -5,7 +5,6 @@
 #pragma once
 
 #include "dnn/abst_layer.hpp"
-#include "dnn/math_util.hpp"
 
 namespace MachineLearning
 {

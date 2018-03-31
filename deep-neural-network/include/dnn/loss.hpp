@@ -85,4 +85,4 @@ public:
     }
 };
 
-}  // namespace of MachineLearning
+}  // namespace MachineLearning

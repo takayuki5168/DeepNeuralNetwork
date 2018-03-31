@@ -76,8 +76,9 @@ public:
 	      	    int row = static_cast<int>(mt()) % static_cast<int>(in_mat.rows());
 	      	    row = row > 0 ? row : -row;
 	      	    //std::cout << row << std::endl;
-  	            batch_in_mat.row(k) = in_mat.row(row);
-	      	    batch_ans_mat.row(k) = ans_mat.row(row);
+		    // TODO TODO TODO
+  	            batch_in_mat.row(k) = in_mat.row(k);//row);
+	      	    batch_ans_mat.row(k) = ans_mat.row(k);//row);
                }
 	        //std::cout << batch_in_mat << std::endl;
 	      	//std::cout << batch_ans_mat << std::endl;
