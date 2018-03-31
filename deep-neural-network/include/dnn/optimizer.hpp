@@ -42,16 +42,16 @@ namespace MachineLearning
   };
 
   /*!
-   * @class   SGD
-   * @brief   class of SGD Optimizer
+   * @class   MomentumSGD
+   * @brief   class of MomentumSGD Optimizer
    */
-  class Momentum : public AbstOptimizer
+  class MomentumSGD : public AbstOptimizer
   {
   public:
     /*!    
      * constructor
      */  
-    explicit Momentum(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.01, double momentum = 0.9)
+    explicit MomentumSGD(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.01, double momentum = 0.9)
       : AbstOptimizer(layer)
     {
       m_learning_rate = learning_rate;
@@ -73,16 +73,16 @@ namespace MachineLearning
   };
   
   /*!
-   * @class   Adagrad
-   * @brief   class of Adagrad Optimizer
+   * @class   AdaGrad
+   * @brief   class of AdaGrad Optimizer
    */
-  class Adagrad : public AbstOptimizer
+  class AdaGrad : public AbstOptimizer
   {
   public:
     /*!  
      * constructor
      */
-    explicit Adagrad(const std::unique_ptr<AbstLayer>& layer, double rate = 0.1)
+    explicit AdaGrad(const std::unique_ptr<AbstLayer>& layer, double rate = 0.1)
       : AbstOptimizer(layer)
     {
       m_rate = rate;
@@ -105,6 +105,88 @@ namespace MachineLearning
     double m_rate = 0.1;
     Eigen::MatrixXd m_hadamard_mat;
   };
+  
+  /*!
+   * @class   Adam
+   * @brief   class of Adam Optimizer
+   */
+  class Adam : public AbstOptimizer
+  {
+  public:
+    /*!  
+     * constructor
+     */
+    explicit Adam(const std::unique_ptr<AbstLayer>& layer, double rate = 0.001, double alpha = 0.9, double beta = 0.999)
+      : AbstOptimizer(layer), m_alpha(alpha), m_beta(beta)
+    {
+      m_rate = rate;
+      m_m_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
+      m_v_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());      
+    }
 
+    virtual void calc(std::unique_ptr<AbstLayer>& layer) override
+    {
+      m_m_mat = m_alpha * m_m_mat + (1 - m_alpha) * layer->getDWeight();
+      
+      for (int i = 0; i < layer->getWeight().rows(); i++){
+	for (int j = 0; j < layer->getWeight().cols(); j++) {
+	  m_v_mat(i, j) = m_beta * m_v_mat(i, j) + (1 - m_beta) * std::pow(layer->getDWeight()(i, j), 2);
+	}
+      }
+      
+      Eigen::MatrixXd d_weight_mat(layer->getWeight().rows(), layer->getWeight().cols());      
+      for (int i = 0; i < layer->getWeight().rows(); i++){
+	for (int j = 0; j < layer->getWeight().cols(); j++) {
+	  d_weight_mat(i, j) = m_m_mat(i, j) / (1 - m_alpha) / (m_v_mat(i, j) / (1 - m_beta) + 1e-7);
+	}
+      }
+
+      layer->setWeight(layer->getWeight() - m_rate * d_weight_mat);
+    }
+
+  private:
+    double m_rate = 0.001;
+    double m_alpha = 0.9;
+    double m_beta = 0.999;
+    
+    Eigen::MatrixXd m_m_mat;
+    Eigen::MatrixXd m_v_mat;    
+  };
+
+  /*!
+   * @class   RMSprop
+   * @brief   class of RMSprop Optimizer
+   */
+  class RMSprop : public AbstOptimizer
+  {
+  public:
+    /*!  
+     * constructor
+     */
+    explicit RMSprop(const std::unique_ptr<AbstLayer>& layer, double rate = 0.001, double alpha = 0.99)
+      : AbstOptimizer(layer), m_alpha(alpha)
+    {
+      m_rate = rate;
+      m_hadamard_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
+    }
+
+    virtual void calc(std::unique_ptr<AbstLayer>& layer) override
+    {
+      Eigen::MatrixXd d_weight_mat(layer->getWeight().rows(), layer->getWeight().cols());
+      for (int i = 0; i < layer->getWeight().rows(); i++){
+	for (int j = 0; j < layer->getWeight().cols(); j++) {
+	  m_hadamard_mat(i, j) = m_alpha * m_hadamard_mat(i, j) + (1 - m_alpha) * std::pow(layer->getDWeight()(i, j), 2);
+	  d_weight_mat(i, j) = layer->getDWeight()(i, j) / (std::sqrt(m_hadamard_mat(i, j)) + 1e-08);
+	}
+      }
+      layer->setWeight(layer->getWeight() - m_rate * d_weight_mat);
+    }
+
+  private:
+    double m_rate = 0.001;
+    double m_alpha = 0.99;
+    Eigen::MatrixXd m_hadamard_mat;
+  };
+  
 
 }  // namespace MachineLearning

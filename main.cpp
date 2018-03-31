@@ -29,10 +29,12 @@ int main()
 
   // TODO MeanAbsoluteError Crossentropy Hinge BinaryCrossentropy CategoricalCrossentropy
   dnn->loss<MeanSquaredError>();
-  // TODO Adam Adagrad RMSprop
-  dnn->opt<Adagrad>();
+  // TODO Adam RMSprop
   //dnn->opt<SGD>(0.01);
-  //dnn->opt<Momentum>();  
+  //dnn->opt<Momentum>();
+  //dnn->opt<Adagrad>();
+  //dnn->opt<Adam>();
+  dnn->opt<RMSprop>();
 
   dnn->fit(train_mat, ans_mat, 1000);
 
