@@ -112,7 +112,7 @@ namespace MachineLearning
 	        
 	  for (unsigned int k = 0; k < m_layers.size(); k++) {
 	    Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - k - 1)->backward(next_in_mat);
-	    m_layers.at(m_layers.size() - k - 1);	    
+	    m_optimizers.at(k)->calc(m_layers.at(m_layers.size() - k - 1));
 	            
 	    next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
 	    next_in_mat = tmp_mat;
@@ -166,10 +166,10 @@ namespace MachineLearning
     template<class OptClass, class... ArgClass>
     void opt(ArgClass&&... args)
     {
-      std::unique_ptr<OptClass> opt = std::make_unique<OptClass>(args...);
-      auto opt_func = opt->getOptFunc();
-      for (unsigned int i = 0; i < m_layers.size(); i++){
-	m_layers.at(i)->setOptFunc(opt_func);
+      for (unsigned int i = 0; i < m_layers.size(); i++) {
+	std::unique_ptr<OptClass> optimizer = std::make_unique<OptClass>(m_layers.at(i), args...);
+	m_optimizers.push_back(std::move(optimizer));
+	
       }
     }
 
@@ -182,6 +182,7 @@ namespace MachineLearning
     std::random_device rnd;
     std::mt19937 mt;
 
+    std::vector<std::unique_ptr<AbstOptimizer>> m_optimizers;
   };
   
   std::unique_ptr<DeepNeuralNetwork> initDeepNeuralNetwork() {

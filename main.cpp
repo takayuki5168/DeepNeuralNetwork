@@ -31,9 +31,10 @@ int main()
   dnn->loss<MeanSquaredError>();
   // TODO Adam Adagram RMSprop  
   dnn->opt<SGD>(0.1);
-  
+  //dnn->opt<Momentum>();  
+
   dnn->fit(train_mat, ans_mat, 1000);
-    
+      
   Eigen::MatrixXd out_mat = dnn->predict(train_mat);
   std::cout << "==input==" << std::endl;
   std::cout << train_mat << std::endl;

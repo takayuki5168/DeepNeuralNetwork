@@ -53,10 +53,6 @@ namespace MachineLearning
       DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
       m_neuron_num = neuron_num;
     }
-    void setOptFunc(std::function<void(AbstLayer*)> opt_func)
-    {
-      m_opt_func = opt_func;
-    }
 
     virtual void initNetwork() {}
 
@@ -75,9 +71,6 @@ namespace MachineLearning
     Eigen::MatrixXd m_d_weight_mat;
 
     Eigen::MatrixXd m_in_mat;  //!< input matrix
-
-    std::function<void(AbstLayer*)> m_opt_func;
-  
   };
 
 }  // namespace MachineLearning
