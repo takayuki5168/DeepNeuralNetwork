@@ -12,10 +12,13 @@ int main()
 
   Eigen::MatrixXd train_mat(4, 2);
   train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
-  Eigen::MatrixXd ans_mat(4, 2);
-  ans_mat << 1, 0, 0, 1, 0, 1, 1, 0;
+  
+  //Eigen::MatrixXd ans_mat(4, 2);
+  //ans_mat << 1, 0, 0, 1, 0, 1, 1, 0;
+  Eigen::MatrixXd ans_mat(4, 4);
+  ans_mat << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
-  // TODO LSTM Softmax
+  // TODO Softmax RNN LSTM Conv1D Conv2D Conv3D MaxPooling1D MaxPooling2D MaxPooling3D
   auto dnn = initDeepNeuralNetwork();
   dnn->add<Dense>(10, 2);
   dnn->add<ReLU>();
@@ -23,22 +26,18 @@ int main()
   dnn->add<ReLU>();
   dnn->add<Dense>(10);
   dnn->add<ReLU>();
-  dnn->add<Dense>(2);
+  dnn->add<Dense>(4);
   //dnn->add<Softmax>();
   //dnn->add<LSTM>(128);
 
-  // TODO MeanAbsoluteError Crossentropy Hinge BinaryCrossentropy CategoricalCrossentropy
-  dnn->loss<MeanSquaredError>();
-  // TODO Adam RMSprop
-  //dnn->opt<SGD>(0.01);
-  //dnn->opt<MomentumSGD>();
-  //dnn->opt<AdaGrad>();
-  //dnn->opt<Adam>();
-  //dnn->opt<RMSprop>();
-  dnn->opt<AdaDelta>();
+  // TODO CrossEntropy BinaryCrossentropy CategoricalCrossentropy
+  //dnn->loss<MeanSquaredError>();
+  dnn->loss<MeanAbsoluteError>();
+  //dnn->loss<CrossEntropy>();  
+  
+  dnn->opt<RMSprop>();
 
   dnn->fit(train_mat, ans_mat, 1000);
-
 
   std::cout << std::endl;
   Eigen::MatrixXd out_mat = dnn->predict(train_mat);
