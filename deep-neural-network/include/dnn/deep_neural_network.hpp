@@ -61,7 +61,7 @@ public:
      * @param   in_mat     input matrix of train_data
      * @param   ans_mat    answer matrix of train_data
      */
-  void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat, int epoch = 1000000, int batch_size = 4)
+  void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat, int epoch = 1000, int batch_size = 4)
     {
         setbuf(stdout, NULL);
 	Eigen::MatrixXd batch_in_mat(batch_size, in_mat.cols());
@@ -69,7 +69,7 @@ public:
         for (int i = 0; i < epoch; i++) {
 	    auto start_time = std::chrono::system_clock::now();
             std::cout << "Epoch " << i + 1 << "/" << epoch << std::endl;
-            int loop_num = 60000;//std::max(static_cast<int>(static_cast<double>(in_mat.rows()) / batch_size), 1);
+            int loop_num = std::max(static_cast<int>(static_cast<double>(in_mat.rows()) / batch_size), 1);
 	    for (int j = 0; j < loop_num; j++){
 	        for (int k = 0; k < batch_size; k++) {
                     mt.seed(rnd());
@@ -118,18 +118,16 @@ public:
 	       double elapsed = static_cast<double>(std::chrono::duration_cast<std::chrono::milliseconds>(end_time - start_time).count()) / 1000;
 	       
 	       printf("\r");
-	       //std::cout << j << "/" << loop_num << " [";
-	       printf("%d/%d [", j, loop_num);
+	       printf("%d/%d [", j + 1, loop_num);
 	       	       int width = 15;
 	       for (int k = 0; k < width; k++) {
-		 if (k < static_cast<double>(width) * j / loop_num) {
+		 if (k < static_cast<double>(width) * (j + 1) / loop_num) {
 		   printf("=");
 		 }else{
 		   printf(" ");
 		 }
 	       }
 	 
-               //std::cout << "] " << elapsed << "s loss: " << loss;// << std::endl;
 	       printf("] %2.3lfs  loss: %3.3lf", elapsed, loss);
 	    }
 	    std::cout << std::endl;
