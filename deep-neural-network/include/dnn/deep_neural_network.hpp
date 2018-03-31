@@ -112,7 +112,7 @@ namespace MachineLearning
 	        
 	  for (unsigned int k = 0; k < m_layers.size(); k++) {
 	    Eigen::MatrixXd tmp_mat = m_layers.at(m_layers.size() - k - 1)->backward(next_in_mat);
-	    m_optimizers.at(k)->calc(m_layers.at(m_layers.size() - k - 1));
+	    m_optimizers.at(m_layers.size() - k - 1)->calc(m_layers.at(m_layers.size() - k - 1));
 	            
 	    next_in_mat.resize(tmp_mat.rows(), tmp_mat.cols());
 	    next_in_mat = tmp_mat;

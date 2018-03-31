@@ -29,12 +29,15 @@ int main()
 
   // TODO MeanAbsoluteError Crossentropy Hinge BinaryCrossentropy CategoricalCrossentropy
   dnn->loss<MeanSquaredError>();
-  // TODO Adam Adagram RMSprop  
-  dnn->opt<SGD>(0.1);
+  // TODO Adam Adagrad RMSprop
+  dnn->opt<Adagrad>();
+  //dnn->opt<SGD>(0.01);
   //dnn->opt<Momentum>();  
 
   dnn->fit(train_mat, ans_mat, 1000);
-      
+
+
+  std::cout << std::endl;
   Eigen::MatrixXd out_mat = dnn->predict(train_mat);
   std::cout << "==input==" << std::endl;
   std::cout << train_mat << std::endl;
