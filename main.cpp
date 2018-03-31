@@ -31,10 +31,11 @@ int main()
   dnn->loss<MeanSquaredError>();
   // TODO Adam RMSprop
   //dnn->opt<SGD>(0.01);
-  //dnn->opt<Momentum>();
-  //dnn->opt<Adagrad>();
+  //dnn->opt<MomentumSGD>();
+  //dnn->opt<AdaGrad>();
   //dnn->opt<Adam>();
-  dnn->opt<RMSprop>();
+  //dnn->opt<RMSprop>();
+  dnn->opt<AdaDelta>();
 
   dnn->fit(train_mat, ans_mat, 1000);
 
