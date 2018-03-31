@@ -16,23 +16,22 @@ int main()
   ans_mat << 1, 0, 0, 1, 0, 1, 1, 0;
 
   // TODO LSTM Softmax
-  std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
-  dnn->add(std::make_unique<Dense>(10, 2));
-  dnn->add(std::make_unique<ReLU>());
-  dnn->add(std::make_unique<Dense>(20));
-  dnn->add(std::make_unique<ReLU>());
-  dnn->add(std::make_unique<Dense>(10));
-  dnn->add(std::make_unique<ReLU>());
-  dnn->add(std::make_unique<Dense>(2));
-
-  //dnn->add(std::make_unique<Softmax>());
-    
-  //dnn->add(std::make_unique<LSTM>(128));
+  auto dnn = initDeepNeuralNetwork();
+  dnn->add<Dense>(10, 2);
+  dnn->add<ReLU>();
+  dnn->add<Dense>(20);
+  dnn->add<ReLU>();
+  dnn->add<Dense>(10);
+  dnn->add<ReLU>();
+  dnn->add<Dense>(2);
+  //dnn->add<Softmax>();
+  //dnn->add<LSTM>(128);
 
   // TODO MeanAbsoluteError Crossentropy Hinge BinaryCrossentropy CategoricalCrossentropy
-  // TODO Adam Adagram RMSprop
-  dnn->compile(std::make_unique<MeanSquaredError>(), std::make_unique<SGD>());
-
+  dnn->loss<MeanSquaredError>();
+  // TODO Adam Adagram RMSprop  
+  dnn->opt<SGD>(0.1);
+  
   dnn->fit(train_mat, ans_mat, 1000);
     
   Eigen::MatrixXd out_mat = dnn->predict(train_mat);
@@ -40,7 +39,6 @@ int main()
   std::cout << train_mat << std::endl;
   std::cout << "==output==" << std::endl;
   std::cout << out_mat << std::endl;
-
 
   return 0;
 }
