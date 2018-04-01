@@ -1,4 +1,4 @@
-/*
+/*!
  * @file    optimizer.hpp
  * @brief   classes of Optimizers
  */
@@ -24,9 +24,9 @@ protected:
 };
 
 /*!
-   * @class   SGD
-   * @brief   class of SGD Optimizer
-   */
+ * @class   SGD
+ * @brief   class of SGD Optimizer
+ */
 class SGD : public AbstOptimizer
 {
 public:
