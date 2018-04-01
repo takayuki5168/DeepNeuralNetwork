@@ -8,27 +8,33 @@
 
 int main()
 {
-  using namespace MachineLearning;
+    using namespace MachineLearning;
 
-  Eigen::MatrixXd train_mat(4, 2);
-  train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
-  
-  Eigen::MatrixXd ans_mat(4, 4);
-  ans_mat << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
+    Eigen::MatrixXd train_mat(4, 2);
+    train_mat << 0, 0, 0, 1, 1, 0, 1, 1;
 
-  auto dnn = initDeepNeuralNetwork();
-  dnn->add<Dense>(10, 2);
-  dnn->add<ReLU>();
-  dnn->add<Dense>(20);
-  dnn->add<ReLU>();
-  dnn->add<Dense>(10);
-  dnn->add<ReLU>();
-  dnn->add<Dense>(4);
+    Eigen::MatrixXd ans_mat(4, 4);
+    ans_mat << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1;
 
-  dnn->loss<MeanSquaredError>();
-  dnn->opt<RMSprop>();
-  
-  dnn->fit(train_mat, ans_mat, 1000);
+    auto dnn = initDeepNeuralNetwork();
+    dnn->add<Dense>(10, 2);
+    dnn->add<ReLU>();
+    dnn->add<Dense>(20);
+    dnn->add<ReLU>();
+    dnn->add<Dense>(10);
+    dnn->add<ReLU>();
+    dnn->add<Dense>(4);
 
-  return 0;
+    dnn->loss<MeanSquaredError>();
+    dnn->opt<RMSprop>();
+
+    dnn->fit(train_mat, ans_mat, 1000);
+
+    Eigen::MatrixXd out_mat = dnn->predict(train_mat);
+
+    std::cout << "=====input=====" << std::endl;
+    std::cout << train_mat << std::endl;
+    std::cout << "=====output=====" << std::endl;
+    std::cout << out_mat << std::endl;
+    return 0;
 }
