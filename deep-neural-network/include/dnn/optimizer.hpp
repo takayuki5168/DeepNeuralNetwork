@@ -15,8 +15,12 @@ namespace MachineLearning
 class AbstOptimizer
 {
 public:
-    explicit AbstOptimizer(const std::unique_ptr<AbstLayer>& /*layer*/) {}
+    explicit AbstOptimizer(const std::unique_ptr<AbstLayer>& /*layer*/, double learning_rate = 0.1)
+        : m_learning_rate(learning_rate) {}
     virtual void calc(std::unique_ptr<AbstLayer>& layer) = 0;
+
+protected:
+    const double m_learning_rate = 0.1;
 };
 
 /*!
@@ -30,7 +34,7 @@ public:
      * constructor
      */
     explicit SGD(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.1)
-      : AbstOptimizer(layer), m_learning_rate(learning_rate) {}
+        : AbstOptimizer(layer, learning_rate) {}
 
     virtual void calc(std::unique_ptr<AbstLayer>& layer) override
     {
@@ -38,7 +42,6 @@ public:
     }
 
 private:
-    const double m_learning_rate = 0.1;
 };
 
 /*!
@@ -52,11 +55,8 @@ public:
      * constructor
      */
     explicit MomentumSGD(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.01, double momentum = 0.9)
-        : AbstOptimizer(layer)
+        : AbstOptimizer(layer, learning_rate), m_momentum(momentum)
     {
-        m_learning_rate = learning_rate;
-        m_momentum = momentum;
-
         m_vel_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
     }
 
@@ -67,8 +67,7 @@ public:
     }
 
 private:
-    double m_learning_rate = 0.1;
-    double m_momentum = 0.9;
+    const double m_momentum = 0.9;
     Eigen::MatrixXd m_vel_mat;
 };
 
@@ -82,10 +81,9 @@ public:
     /*!  
      * constructor
      */
-    explicit AdaGrad(const std::unique_ptr<AbstLayer>& layer, double rate = 0.1)
-        : AbstOptimizer(layer)
+    explicit AdaGrad(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.1)
+        : AbstOptimizer(layer, learning_rate)
     {
-        m_rate = rate;
         m_hadamard_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
     }
 
@@ -98,11 +96,10 @@ public:
                 d_weight_mat(i, j) = layer->getDWeight()(i, j) / std::sqrt(m_hadamard_mat(i, j) + 1e-07);
             }
         }
-        layer->setWeight(layer->getWeight() - m_rate * d_weight_mat);
+        layer->setWeight(layer->getWeight() - m_learning_rate * d_weight_mat);
     }
 
 private:
-    double m_rate = 0.1;
     Eigen::MatrixXd m_hadamard_mat;
 };
 
@@ -117,10 +114,9 @@ public:
     /*!  
      * constructor
      */
-    explicit RMSprop(const std::unique_ptr<AbstLayer>& layer, double rate = 0.001, double alpha = 0.99)
-        : AbstOptimizer(layer), m_alpha(alpha)
+    explicit RMSprop(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.001, double alpha = 0.99)
+        : AbstOptimizer(layer, learning_rate), m_alpha(alpha)
     {
-        m_rate = rate;
         m_hadamard_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
     }
 
@@ -133,11 +129,10 @@ public:
                 d_weight_mat(i, j) = layer->getDWeight()(i, j) / (std::sqrt(m_hadamard_mat(i, j)) + 1e-08);
             }
         }
-        layer->setWeight(layer->getWeight() - m_rate * d_weight_mat);
+        layer->setWeight(layer->getWeight() - m_learning_rate * d_weight_mat);
     }
 
 private:
-    double m_rate = 0.001;
     double m_alpha = 0.99;
     Eigen::MatrixXd m_hadamard_mat;
 };
@@ -173,7 +168,7 @@ public:
     }
 
 private:
-    double m_rho = 0.95;
+    const double m_rho = 0.95;
 
     Eigen::MatrixXd m_h_mat;
     Eigen::MatrixXd m_s_mat;
@@ -190,10 +185,9 @@ public:
     /*!  
      * constructor
      */
-    explicit Adam(const std::unique_ptr<AbstLayer>& layer, double rate = 0.001, double alpha = 0.9, double beta = 0.999)
-        : AbstOptimizer(layer), m_alpha(alpha), m_beta(beta)
+    explicit Adam(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.001, double alpha = 0.9, double beta = 0.999)
+        : AbstOptimizer(layer, learning_rate), m_alpha(alpha), m_beta(beta)
     {
-        m_rate = rate;
         m_m_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
         m_v_mat = Eigen::MatrixXd::Zero(layer->getWeight().rows(), layer->getWeight().cols());
     }
@@ -215,13 +209,12 @@ public:
             }
         }
 
-        layer->setWeight(layer->getWeight() - m_rate * d_weight_mat);
+        layer->setWeight(layer->getWeight() - m_learning_rate * d_weight_mat);
     }
 
 private:
-    double m_rate = 0.001;
-    double m_alpha = 0.9;
-    double m_beta = 0.999;
+    const double m_alpha = 0.9;
+    const double m_beta = 0.999;
 
     Eigen::MatrixXd m_m_mat;
     Eigen::MatrixXd m_v_mat;
