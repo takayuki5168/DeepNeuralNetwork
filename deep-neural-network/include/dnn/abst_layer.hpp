@@ -11,18 +11,22 @@
 namespace MachineLearning
 {
 
+/*!
+ * @class   AbstLayer
+ * @brief   class of AbstLayer
+ */
 class AbstLayer
 {
 public:
     /*!
-     * @brief   constructor
-     *          for Activation layer
+     * constructor
+     * @note   for Activation layer
      */
     explicit AbstLayer() {}
 
     /*!
-     * @brief   constructor
-     *          for Dense layer
+     * constructor
+     * @note   for Dense layer
      */
     explicit AbstLayer(int neuron_num)
         : m_neuron_num(neuron_num)
@@ -30,8 +34,8 @@ public:
         DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
     }
     /*!
-     * @brief   constructor
-     *          for the first layer
+     * constructor
+     * @note   for the first layer of network
      */
     explicit AbstLayer(int neuron_num, int in_num)
         : m_neuron_num(neuron_num), m_in_num(in_num)
@@ -68,9 +72,9 @@ protected:
     int m_in_num = 0;      //!< number of input
 
     Eigen::MatrixXd m_weight_mat;  //!< weight matrix (m_in_num + 1) * m_neuron_num
-    Eigen::MatrixXd m_d_weight_mat;
+    Eigen::MatrixXd m_d_weight_mat; //!< derive weight matrix (m_in_num + 1) * m_neuron_num
 
-    Eigen::MatrixXd m_in_mat;  //!< input matrix
+    Eigen::MatrixXd m_in_mat;  //!< input matrix of this layer when forward propagation
 };
 
 }  // namespace MachineLearning

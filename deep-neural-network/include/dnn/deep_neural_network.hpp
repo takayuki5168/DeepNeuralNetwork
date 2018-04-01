@@ -17,19 +17,20 @@
 namespace MachineLearning
 {
 /*!
-   * @brief   class of DeepNeuralNetwork
-   */
+ * @class   DeepNeuralNetwork
+ * @brief   class of DeepNeuralNetwork
+ */
 class DeepNeuralNetwork
 {
 public:
     /*!
-     * @brief   constructor
+     * constructor
      */
     explicit DeepNeuralNetwork() {}
 
     /*!
-     * @brief   add new layer
-     * @param   layer     new layer added
+     * add new layer
+     * @param layer   new layer added
      */
     template <class LayerClass, class... ArgClass>
     void add(ArgClass&&... args)
@@ -59,9 +60,9 @@ public:
     }
 
     /*!
-     * @brief   fit
-     * @param   in_mat     input matrix of train_data
-     * @param   ans_mat    answer matrix of train_data
+     * fit
+     * @param in_mat    input matrix of train_data
+     * @param ans_mat   answer matrix of train_data
      */
     void fit(const Eigen::MatrixXd& in_mat, const Eigen::MatrixXd& ans_mat, int epoch = 1000, int batch_size = 4)
     {
@@ -138,8 +139,8 @@ public:
     }
 
     /*!
-     * @brief   predict
-     * @param   in_mat     input matrix to predict
+     * predict
+     * @param in_mat   input matrix to predict
      */
     Eigen::MatrixXd predict(const Eigen::MatrixXd& in_mat)
     {
@@ -183,9 +184,9 @@ private:
     std::vector<std::unique_ptr<AbstOptimizer>> m_optimizers;
 };
 
-std::unique_ptr<DeepNeuralNetwork> initDeepNeuralNetwork()
+static std::unique_ptr<DeepNeuralNetwork> initDeepNeuralNetwork()
 {
     return std::make_unique<DeepNeuralNetwork>();
 }
 
-}  // namespace of MachineLearning
+}  // namespace MachineLearning

@@ -9,6 +9,10 @@
 namespace MachineLearning
 {
 
+/*!
+ * @class   AbstLoss
+ * @brief   class of AbstLoss
+ */
 class AbstLoss
 {
 public:
@@ -22,6 +26,10 @@ protected:
     std::function<Eigen::MatrixXd(Eigen::MatrixXd, Eigen::MatrixXd)> m_d_loss_func;
 };
 
+/*!
+ * @class   MeanSquaredError
+ * @brief   class of MeanSquaredError
+ */
 class MeanSquaredError : public AbstLoss
 {
 public:
@@ -42,7 +50,10 @@ public:
     }
 };
 
-//TODO
+/*!
+ * @class   MeanAbsoluteError
+ * @brief   class of MeanAbsoluteError
+ */ 
 class MeanAbsoluteError : public AbstLoss
 {
 public:
@@ -71,6 +82,10 @@ public:
 };
 
 //TODO
+/*!
+ * @class   CrossEntropy
+ * @brief   class of CrossEntropy
+ */
 class CrossEntropy : public AbstLoss
 {
 public:
