@@ -11,16 +11,16 @@ namespace MachineLearning
 {
 
 /*!
-   * @class   Dense
-   * @brief   class of Dense Layer
-   */
+ * @class   Dense
+ * @brief   class of Dense Layer
+ */
 class Dense : public AbstLayer
 {
 public:
     /*!
      * constructor
      * @param neuron_num   number of neuron of this layer
-     * @note   for except the first layer
+     * @note   for except the first layer of network
      */
     explicit Dense(int neuron_num)
         : AbstLayer(neuron_num) {}
@@ -28,7 +28,7 @@ public:
      * constructor
      * @param neuron_num   number of neuron of this layer
      * @param in_num       number of input of this layer
-     * @note   for the first layer
+     * @note   for the first layer of network
      */
     explicit Dense(int neuron_num, int in_num)
         : AbstLayer(neuron_num, in_num) {}
@@ -57,7 +57,9 @@ public:
 
     /*!
      * forward propagation
-     * @param in_mat   input matrix
+     * @param in_mat       input matrix of this layer when forward propagation
+     * @param train_flag   if this propagation is used to train or not
+     * @return out_mat     output matrix of this layer when forward propagation
      */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
@@ -81,7 +83,12 @@ public:
 
         return out_mat;
     }
-
+  
+    /*!
+     * backward propagation
+     * @param in_mat   input matrix of this layer
+     * @return out_mat     output matrix of this layer when forward propagation
+     */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         m_d_weight_mat = m_in_mat.transpose() * in_mat;

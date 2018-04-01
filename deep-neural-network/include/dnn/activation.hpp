@@ -17,11 +17,14 @@ class Softmax : public AbstLayer
 public:
     explicit Softmax() : AbstLayer() {}
 
+    /*!
+     * forward propagation
+     * @param in_mat       input matrix of this layer when forward propagation
+     * @param train_flag   if this propagation is used to train or not
+     * @return out_mat     output matrix of this layer when forward propagation
+     */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
-        //std::cout << "[Softmax] forward" << std::endl;
-        //std::cout << in_mat << std::endl;
-
         m_in_mat.resize(in_mat.rows(), in_mat.cols());
         m_in_mat = in_mat;
 
@@ -32,7 +35,6 @@ public:
                 max_vec(i) = (max_vec(i) > in_mat(j, i)) ? max_vec(i) : in_mat(j, i);
             }
         }
-        //std::cout << max_vec << std::endl;
 
         // calc exponential mat
         Eigen::MatrixXd exp_mat;
@@ -51,10 +53,14 @@ public:
                 exp_mat(j, i) = exp_mat(j, i) / sum_val;
             }
         }
-        //std::cout << exp_mat << std::endl;
         return exp_mat;
     }
 
+    /*!
+     * back propagation
+     * @param in_mat   input matrix of this layer when back propagation
+     * @return out_mat   output matrix of this layer when back propagation
+     */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::VectorXd sum_vec = Eigen::VectorXd::Zero(in_mat.cols());
@@ -90,8 +96,9 @@ public:
 
     /*!
      * forward propagation
-     * @param in_mat       input matrix of forward propagation
+     * @param in_mat       input matrix of this layer when forward propagation
      * @param train_flag   if this propagation is used to train or not
+     * @return out_mat     output matrix of this layer when forward propagation
      */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
@@ -109,8 +116,9 @@ public:
 
     /*!
      * back propagation
-     * @param in_mat   input matrix of back propagation
-     * @return out_mat   output matrix of back propagation
+     * @param in_mat   input matrix of this layer when back propagation
+     * @return out_mat   output matrix of this layer when back propagation
+     * @return out_mat     output matrix of this layer when back propagation
      */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
@@ -141,8 +149,9 @@ public:
 
     /*!
      * forward propagation
-     * @param in_mat       input matrix of forward propagation
+     * @param in_mat       input matrix of this layer when forward propagation
      * @param train_flag   if this propagation is used to train or not
+     * @return out_mat     output matrix of this layer when forward propagation
      */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool /*train_flag*/) override
     {
@@ -160,8 +169,9 @@ public:
 
     /*!
      * back propagation
-     * @param in_mat   input matrix of back propagation
-     * @return out_mat   output matrix of back propagation
+     * @param in_mat   input matrix of this layer when back propagation
+     * @return out_mat   output matrix of this layer when back propagation
+     * @return out_mat     output matrix of this layer when back propagation
      */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {

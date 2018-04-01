@@ -8,7 +8,10 @@
 
 namespace MachineLearning
 {
-
+/*!
+ * @class   AbstOptimizer
+ * @brief   class of AbstOptimizer
+ */
 class AbstOptimizer
 {
 public:
@@ -26,25 +29,22 @@ public:
     /*!  
      * constructor
      */
-    explicit SGD(const std::unique_ptr<AbstLayer>& layer, double rate = 0.1)
-        : AbstOptimizer(layer)
-    {
-        m_rate = rate;
-    }
+    explicit SGD(const std::unique_ptr<AbstLayer>& layer, double learning_rate = 0.1)
+      : AbstOptimizer(layer), m_learning_rate(learning_rate) {}
 
     virtual void calc(std::unique_ptr<AbstLayer>& layer) override
     {
-        layer->setWeight(layer->getWeight() - m_rate * layer->getDWeight());
+        layer->setWeight(layer->getWeight() - m_learning_rate * layer->getDWeight());
     }
 
 private:
-    double m_rate = 0.1;
+    const double m_learning_rate = 0.1;
 };
 
 /*!
-   * @class   MomentumSGD
-   * @brief   class of MomentumSGD Optimizer
-   */
+ * @class   MomentumSGD
+ * @brief   class of MomentumSGD Optimizer
+ */
 class MomentumSGD : public AbstOptimizer
 {
 public:
@@ -73,9 +73,9 @@ private:
 };
 
 /*!
-   * @class   AdaGrad
-   * @brief   class of AdaGrad Optimizer
-   */
+ * @class   AdaGrad
+ * @brief   class of AdaGrad Optimizer
+ */
 class AdaGrad : public AbstOptimizer
 {
 public:
@@ -108,9 +108,9 @@ private:
 
 
 /*!
-   * @class   RMSprop
-   * @brief   class of RMSprop Optimizer
-   */
+ * @class   RMSprop
+ * @brief   class of RMSprop Optimizer
+ */
 class RMSprop : public AbstOptimizer
 {
 public:
@@ -143,9 +143,9 @@ private:
 };
 
 /*!
-   * @class   AdaDelta
-   * @brief   class of AdaDelta Optimizer
-   */
+ * @class   AdaDelta
+ * @brief   class of AdaDelta Optimizer
+ */
 class AdaDelta : public AbstOptimizer
 {
 public:
@@ -181,9 +181,9 @@ private:
 };
 
 /*!
-   * @class   Adam
-   * @brief   class of Adam Optimizer
-   */
+ * @class   Adam
+ * @brief   class of Adam Optimizer
+ */
 class Adam : public AbstOptimizer
 {
 public:

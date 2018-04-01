@@ -1,3 +1,7 @@
+/*!
+ * @file    dropout.hpp
+ * @brief   class of Dropout
+ */
 #pragma once
 
 #include <random>
@@ -6,12 +10,22 @@
 namespace MachineLearning
 {
 
+/*!
+ * @class   Dropout
+ * @brief   class of Dropout layer
+ */
 class Dropout : public AbstLayer
 {
 public:
     explicit Dropout(double ratio = 0.3)
         : AbstLayer(), m_ratio(ratio) {}
 
+    /*!
+     * forward propagation
+     * @param in_mat       input matrix of this layer when forward propagation
+     * @param train_flag   if this propagation is used to train or not
+     * @return out_mat     output matrix of this layer when forward propagation
+     */
     virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) override
     {
         if (train_flag) {
@@ -33,6 +47,11 @@ public:
         }
     }
 
+    /*!
+     * backward propagation
+     * @param in_mat     input matrix of this layer when back propagation
+     * @return out_mat   output matrix of this layer when back propagation
+     */
     virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) override
     {
         Eigen::MatrixXd out_mat(in_mat.rows(), in_mat.cols());

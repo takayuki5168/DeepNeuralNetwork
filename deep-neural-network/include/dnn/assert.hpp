@@ -1,3 +1,7 @@
+/*!
+ * @file    assert.hpp
+ * @brief   assert macro used while executing
+ */
 #pragma once
 
 #define DYNAMIC_ASSERT(cond, message)                            \

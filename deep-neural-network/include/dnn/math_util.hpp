@@ -11,4 +11,4 @@
 namespace MathUtil
 {
 
-}  // namespace of MathUtil
+}  // namespace MathUtil
