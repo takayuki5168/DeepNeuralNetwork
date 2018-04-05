@@ -34,7 +34,7 @@ dnn->opt<RMSprop>();
 dnn->fit(train_mat, ans_mat, 1000);
 ```
 
-## Test
+## Unit Test
 ---
 ```sh
 $ ./dense_gtest
