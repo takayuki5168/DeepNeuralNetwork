@@ -34,6 +34,31 @@ dnn->opt<RMSprop>();
 dnn->fit(train_mat, ans_mat, 1000);
 ```
 
+## Supported networks
+- Layer
+  - Core
+    - Dense
+    - Dropout
+  - Convolution
+  - Normalization
+- Activation
+  - Sigmoid
+  - ReLU
+  - Softmax
+  - tanh (not implemented)
+  - Identity (not implemented)
+- Loss
+  - MeanSquaredError
+  - MeanAbsoluteError
+  - CrossEntropy (not implemented)
+- Optimizer
+  - SGD
+  - MomentumSGD
+  - AdaGrad
+  - RMSprop
+  - AdaDelta
+  - Adam
+
 ## Unit Test
 ---
 ```sh
