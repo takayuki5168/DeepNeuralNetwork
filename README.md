@@ -14,15 +14,24 @@ $ ./main
 ## Make original model
 ---
 ```cpp
-std::unique_ptr<DeepNeuralNetwork> dnn = std::make_unique<DeepNeuralNetwork>();
+// init network
+auto dnn = initDeepNeuralNetwork();
 
-dnn->add(std::make_unique<Dense>(10, 4));
-dnn->add(std::make_unique<Relu>());
-dnn->add(std::make_unique<Dense>(4));
-dnn->add(std::make_unique<Dropout>(0.1));
-dnn->add(std::make_unique<Softmax>());
+// build model
+dnn->add<Dense>(10, 2);
+dnn->add<ReLU>();
+dnn->add<Dense>(20);
+dnn->add<ReLU>();
+dnn->add<Dense>(10);
+dnn->add<ReLU>();
+dnn->add<Dense>(4);
 
-dnn->compile(Crossentropy(), Adam());
+// set loss and optimizer
+dnn->loss<MeanSquaredError>();
+dnn->opt<RMSprop>();
+
+// fit
+dnn->fit(train_mat, ans_mat, 1000);
 ```
 
 ## Test
