@@ -49,21 +49,6 @@ else()
     message("Compile flags:\n\t${CMAKE_CXX_FLAGS}")
 endif()
 
-# GoogleTest
-set(GOOGLETEST_DIR ${CMAKE_CURRENT_LIST_DIR}/external/googletest/googletest)
-add_subdirectory(${GOOGLETEST_DIR})
-include_directories(SYSTEM ${GOOGLETEST_DIR}/include/)
-function(generate_gtest name)
-    add_executable(${name}_gtest
-        ${CMAKE_CURRENT_LIST_DIR}/test/${name}.cpp
-        deep-neural-network/)
-    target_link_libraries(${name}_gtest
-        gtest
-        gtest_main)
-endfunction()
-generate_gtest(dense)
-generate_gtest(activation)
-
 # Build main
 add_executable(main 
     ${MAIN_SOURCE}
