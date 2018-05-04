@@ -44,7 +44,7 @@ public:
             } else if (layer->getInNum() == 0) {  // NeuronNum was not settled
                 layer->setInNum(m_layers.back()->getNeuronNum());
             }
-            DYNAMIC_ASSERT(layer->getNeuronNum() > 0, "NeuronNum should be more than zero.");
+            RUNTIME_ASSERT(layer->getNeuronNum() > 0, "NeuronNum should be more than zero.");
         } else {                               // This layer is input layer
             if (layer->getNeuronNum() == 0) {  // NeuronNum was not settled
                 layer->setInNum(m_layers.back()->getNeuronNum());

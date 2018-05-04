@@ -6,7 +6,7 @@
 
 #include <memory>
 #include <Eigen/Geometry>
-#include "dnn/assert.hpp"
+#include "dnn/runtime_assert.hpp"
 
 namespace MachineLearning
 {
@@ -31,7 +31,7 @@ public:
     explicit AbstLayer(int neuron_num)
         : m_neuron_num(neuron_num)
     {
-        DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
+        RUNTIME_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
     }
     /*!
      * constructor
@@ -40,21 +40,21 @@ public:
     explicit AbstLayer(int neuron_num, int in_num)
         : m_neuron_num(neuron_num), m_in_num(in_num)
     {
-        DYNAMIC_ASSERT(in_num > 0, "InNum should be more than 0.");
-        DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than 0.");
+        RUNTIME_ASSERT(in_num > 0, "InNum should be more than 0.");
+        RUNTIME_ASSERT(neuron_num > 0, "NeuronNum should be more than 0.");
     }
 
-    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& /*in_mat*/, bool /*train_flag*/) = 0;
-    virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& /*in_mat*/) = 0;
+    virtual Eigen::MatrixXd forward(const Eigen::MatrixXd& in_mat, bool train_flag) = 0;
+    virtual Eigen::MatrixXd backward(const Eigen::MatrixXd& in_mat) = 0;
 
     void setInNum(int in_num)
     {
-        DYNAMIC_ASSERT(in_num > 0, "InNum should be more than zero.");
+        RUNTIME_ASSERT(in_num > 0, "InNum should be more than zero.");
         m_in_num = in_num;
     }
     void setNeuronNum(int neuron_num)
     {
-        DYNAMIC_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
+        RUNTIME_ASSERT(neuron_num > 0, "NeuronNum should be more than zero.");
         m_neuron_num = neuron_num;
     }
 
