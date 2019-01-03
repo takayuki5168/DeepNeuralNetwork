@@ -1,7 +1,8 @@
 # DeepNeuralNetwork Library for C++
+Implementaion is influenced by [Keras](https://keras.io/)
 ---
 
-## How to use
+## How to run a sample program
 ---
 ```sh
 $ mkdir build
@@ -11,7 +12,8 @@ $ make
 $ ./main
 ```
 
-## Make original model
+## Tutorial
+### MLP
 ---
 ```cpp
 // init network
@@ -33,6 +35,8 @@ dnn->opt<RMSprop>();
 // fit
 dnn->fit(train_mat, ans_mat, 1000);
 ```
+
+### CNN
 
 ## Supported networks
 - Layer
