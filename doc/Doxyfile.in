@@ -1,0 +1,31 @@
+PROJECT_NAME           = "@CMAKE_PROJECT_NAME@"
+PROJECT_NUMBER         = @VERSION_MAJOR@.@VERSION_MINOR@.@VERSION_PATCH@
+
+STRIP_FROM_PATH        = @PROJECT_SOURCE_DIR@ \
+@PROJECT_BINARY_DIR@
+INPUT                  = @doxy_main_page@ \
+@PROJECT_SOURCE_DIR@ \
+@PROJECT_BINARY_DIR@
+
+HAVE_DOT               = YES
+UML_LOOK               = YES
+
+EXTRACT_ALL            = YES
+EXTRACT_STATIC         = YES
+EXTRACT_PRIVATE        = YES
+CASE_SENSE_NAMES       = YES
+ENABLED_SECTIONS       = 
+
+FILE_PATTERNS          = *.hpp \
+*.cpp \
+*.doc
+RECURSIVE              = YES
+EXCLUDE                = @PROJECT_SOURCE_DIR@/external \
+@PROJECT_SOURCE_DIR@/test
+EXCLUDE_PATTERNS       = [cC][mM]ake*.*
+
+SORT_MEMBER_DOCS       = NO
+
+GENERATE_LATEX         = NO
+
+USE_MDFILE_AS_MAINPAGE = @doxy_main_page@
