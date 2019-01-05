@@ -68,3 +68,9 @@ dnn->fit(train_mat, ans_mat, 1000);
 ```sh
 $ ./dense_gtest
 ```
+
+## Doc
+### Set Up
+```
+$ sudo apt-get install doxygen
+```
