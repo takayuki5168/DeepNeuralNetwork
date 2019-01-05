@@ -34,7 +34,7 @@ add_definitions(-DEIGEN_NO_DEBUG)
 add_definitions(-DEIGEN_INITIALIZE_MATRICES_BY_ZERO)
 
 # deep-neural-network
-include_directories(DEEP_NEURAL_NETWORK ${CMAKE_CURRENT_LIST_DIR}/deep-neural-network/include/)
+include_directories(DEEP_NEURAL_NETWORK ${CMAKE_CURRENT_LIST_DIR}/lib/include/)
 
 # Sources and headers
 file(GLOB MAIN_SOURCE ${CMAKE_CURRENT_LIST_DIR} main.cpp)
@@ -52,7 +52,7 @@ endif()
 # Build main
 add_executable(main 
   ${MAIN_SOURCE}
-  deep-neural-network/)
+  lib/)
 target_link_libraries(main
   #${Boost_LIBRARIES}
   )

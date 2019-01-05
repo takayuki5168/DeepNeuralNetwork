@@ -75,3 +75,15 @@ $ ./dense_gtest
 $ sudo apt-get install doxygen
 $ sudo apt-get install graphviz
 ```
+
+### Build
+With this command, you can make doc in `build/doc`.
+```
+$ make doc
+```
+
+### Show
+Open `build/doc/html/index.html` with your favorite web browser like below.
+```
+$ chromium-browser doc/html/index.html
+```
